@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mój profil - The Cutest Shop</title>
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+<body>
+
+<h1>The Cutest Shop</h1>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="nowosci.html">Nowości</a>
+    <a href="promocje.html">Promocje</a>
+    <a href="misje.html">Misje</a>
+    <a href="osiagniecia.html">Osiągnięcia</a>
+    <a href="zamowienia.html">Zamówienia</a>
+    <a href="koszyk.html">Koszyk🛒</a>
+
+    <a href="profil.html" id="username-link" class="username-link">
+        👤 Ładowanie...
+    </a>
+</nav>
+
+<div class="profile">
+
+    <div class="profile-card">
+
+        <div id="profile-username" class="profile-username">
+            👤 Ładowanie...
+        </div>
+
+        <div class="profile-info">
+
+            <div class="profile-item">
+                <strong>💕 Miłostki</strong>
+                <span id="milostki">0</span>
+            </div>
+
+            <div class="profile-item">
+                <strong>⭐ Poziom konta</strong>
+                <span id="account-level">NORMAL</span>
+            </div>
+
+            <div class="profile-item">
+                <strong>🏆 Odznaki</strong>
+                <span id="badge-count">0 / 0</span>
+            </div>
+
+        </div>
+
+        <div class="profile-frame-section">
+
+            <h3>🎀 Ramka nicku</h3>
+
+            <div id="frames-container">
+                <p>Ładowanie ramek...</p>
+            </div>
+
+        </div>
+
+        <div class="profile-actions">
+
+            <a href="osiagniecia.html">
+                🏆 Moje odznaki
+            </a>
+
+            <button id="logout-button">
+                🚪 Wyloguj się
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL = "https://peohsktyolhtjdzwjrrk.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_HeAIYFUT37HmOQkZSUr8iw_x_ej8pXN";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+let currentUser = null;
+let currentUsername = "";
+let currentFrame = "frame-none";
+
+
+// ==========================================
+// SPRAWDZENIE LOGOWANIA
+// ==========================================
+
+async function checkLogin() {
+
+    const { data, error } =
+        await supabaseClient.auth.getSession();
+
+    if (error || !data.session) {
+        window.location.href = "logowanie.html";
+        return;
+    }
+
+    currentUser = data.session.user;
+
+    loadProfile();
+}
+
+
+// ==========================================
+// PROFIL
+// ==========================================
+
+async function loadProfile() {
+
+    const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("username, milostki, role, username_frame")
+        .eq("id", currentUser.id)
+        .single();
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania profilu:",
+            error
+        );
+
+        return;
+    }
+
+    currentUsername = data.username;
+    currentFrame = data.username_frame || "frame-none";
+
+    document.getElementById(
+        "profile-username"
+    ).textContent = "👤 " + currentUsername;
+
+    document.getElementById(
+        "milostki"
+    ).textContent = data.milostki;
+
+    document.getElementById(
+        "account-level"
+    ).textContent =
+        data.role === "admin"
+            ? "ADMIN"
+            : "NORMAL";
+
+    applyProfileFrame(currentFrame);
+
+    loadUsernameMenu(
+        currentUsername,
+        currentFrame
+    );
+
+    loadBadges();
+    loadFrames();
+}
+
+
+// ==========================================
+// NICK W MENU
+// ==========================================
+
+function loadUsernameMenu(username, frame) {
+
+    const usernameLink =
+        document.getElementById("username-link");
+
+    usernameLink.textContent =
+        "👤 " + username;
+
+    usernameLink.classList.remove(
+
+        "frame-none",
+        "frame-pink",
+        "frame-purple",
+        "frame-blue",
+        "frame-mint",
+        "frame-yellow",
+        "frame-white",
+        "frame-black",
+        "frame-gray",
+        "frame-crystal",
+        "frame-royal",
+        "frame-gold",
+        "frame-vip"
+
+    );
+
+    usernameLink.classList.add(frame);
+}
+
+
+// ==========================================
+// ODZNAKI
+// ==========================================
+
+async function loadBadges() {
+
+    const { data: badges, error: badgesError } =
+        await supabaseClient
+            .from("badges")
+            .select("*")
+            .eq("active", true);
+
+    if (badgesError) {
+
+        console.error(
+            "Błąd pobierania odznak:",
+            badgesError
+        );
+
+        return;
+    }
+
+    const { data: userBadges, error: userBadgesError } =
+        await supabaseClient
+            .from("user_badges")
+            .select("badge_id")
+            .eq("user_id", currentUser.id);
+
+    if (userBadgesError) {
+
+        console.error(
+            "Błąd pobierania odznak użytkownika:",
+            userBadgesError
+        );
+
+        return;
+    }
+
+    const unlockedCount =
+        userBadges.length;
+
+    document.getElementById(
+        "badge-count"
+    ).textContent =
+        unlockedCount + " / " + badges.length;
+}
+
+
+// ==========================================
+// KOLEJNOŚĆ RAMEK
+// ==========================================
+
+const frameOrder = [
+
+    "frame-none",
+    "frame-pink",
+    "frame-purple",
+    "frame-blue",
+    "frame-mint",
+    "frame-yellow",
+    "frame-white",
+    "frame-black",
+    "frame-gray",
+    "frame-crystal",
+    "frame-royal",
+    "frame-gold",
+    "frame-vip"
+
+];
+
+
+// ==========================================
+// RAMKI
+// ==========================================
+
+async function loadFrames() {
+
+    const container =
+        document.getElementById(
+            "frames-container"
+        );
+
+    const { data: frames, error } =
+        await supabaseClient
+            .from("profile_frames")
+            .select("*")
+            .eq("active", true);
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania ramek:",
+            error
+        );
+
+        container.innerHTML =
+            "<p>Nie udało się załadować ramek.</p>";
+
+        return;
+    }
+
+    frames.sort(function(a, b) {
+
+        return (
+            frameOrder.indexOf(a.css_class) -
+            frameOrder.indexOf(b.css_class)
+        );
+
+    });
+
+    const { data: badges } =
+        await supabaseClient
+            .from("badges")
+            .select("id")
+            .eq("active", true);
+
+    const { data: userBadges } =
+        await supabaseClient
+            .from("user_badges")
+            .select("badge_id")
+            .eq("user_id", currentUser.id);
+
+    const userBadgeCount =
+        userBadges
+            ? userBadges.length
+            : 0;
+
+    const totalActiveBadges =
+        badges
+            ? badges.length
+            : 0;
+
+    container.innerHTML = "";
+
+    frames.forEach(function(frame) {
+
+        let unlocked = false;
+
+        if (
+            frame.unlock_type ===
+            "basic"
+        ) {
+
+            unlocked = true;
+
+        }
+
+        else if (
+            frame.unlock_type ===
+            "achievement"
+        ) {
+
+            if (
+                frame.css_class ===
+                "frame-crystal"
+            ) {
+
+                unlocked =
+                    userBadgeCount >= 5;
+
+            }
+
+            else if (
+                frame.css_class ===
+                "frame-royal"
+            ) {
+
+                unlocked =
+                    totalActiveBadges > 0 &&
+                    userBadgeCount >=
+                    totalActiveBadges;
+
+            }
+
+        }
+
+        else if (
+            frame.unlock_type ===
+            "gold"
+        ) {
+
+            unlocked = false;
+
+        }
+
+        else if (
+            frame.unlock_type ===
+            "vip"
+        ) {
+
+            unlocked = false;
+
+        }
+
+        const option =
+            document.createElement(
+                "button"
+            );
+
+        option.className =
+            "frame-option";
+
+        const preview =
+            document.createElement(
+                "span"
+            );
+
+        preview.className =
+            "frame-preview " +
+            frame.css_class;
+
+        preview.textContent =
+            "👤 " + currentUsername;
+
+        const name =
+            document.createElement(
+                "strong"
+            );
+
+        name.textContent =
+            frame.name;
+
+        option.appendChild(preview);
+        option.appendChild(name);
+
+        if (!unlocked) {
+
+            option.classList.add(
+                "locked"
+            );
+
+            option.disabled = true;
+
+        }
+
+        if (
+            frame.css_class ===
+            currentFrame
+        ) {
+
+            option.classList.add(
+                "selected"
+            );
+
+        }
+
+        if (unlocked) {
+
+            option.addEventListener(
+                "click",
+                function() {
+
+                    selectFrame(
+                        frame.css_class
+                    );
+
+                }
+            );
+
+        }
+
+        container.appendChild(option);
+
+    });
+
+}
+
+
+// ==========================================
+// WYBÓR RAMKI
+// ==========================================
+
+async function selectFrame(frameClass) {
+
+    const { data: frames, error } =
+        await supabaseClient
+            .from("profile_frames")
+            .select("*")
+            .eq("active", true);
+
+    if (error) {
+
+        console.error(
+            "Błąd sprawdzania ramki:",
+            error
+        );
+
+        return;
+    }
+
+    const selectedFrame =
+        frames.find(function(frame) {
+
+            return frame.css_class ===
+                frameClass;
+
+        });
+
+    if (!selectedFrame) {
+        return;
+    }
+
+    let unlocked = false;
+
+    if (
+        selectedFrame.unlock_type ===
+        "basic"
+    ) {
+
+        unlocked = true;
+
+    }
+
+    else if (
+        selectedFrame.unlock_type ===
+        "achievement"
+    ) {
+
+        const { data: badges } =
+            await supabaseClient
+                .from("badges")
+                .select("id")
+                .eq("active", true);
+
+        const { data: userBadges } =
+            await supabaseClient
+                .from("user_badges")
+                .select("badge_id")
+                .eq(
+                    "user_id",
+                    currentUser.id
+                );
+
+        const userBadgeCount =
+            userBadges
+                ? userBadges.length
+                : 0;
+
+        const totalActiveBadges =
+            badges
+                ? badges.length
+                : 0;
+
+        if (
+            frameClass ===
+            "frame-crystal"
+        ) {
+
+            unlocked =
+                userBadgeCount >= 5;
+
+        }
+
+        else if (
+            frameClass ===
+            "frame-royal"
+        ) {
+
+            unlocked =
+                totalActiveBadges > 0 &&
+                userBadgeCount >=
+                totalActiveBadges;
+
+        }
+
+    }
+
+    if (!unlocked) {
+        return;
+    }
+
+    const { error: updateError } =
+        await supabaseClient
+            .from("profiles")
+            .update({
+                username_frame: frameClass
+            })
+            .eq(
+                "id",
+                currentUser.id
+            );
+
+    if (updateError) {
+
+        console.error(
+            "Błąd zapisywania ramki:",
+            updateError
+        );
+
+        return;
+    }
+
+    currentFrame = frameClass;
+
+    applyProfileFrame(
+        frameClass
+    );
+
+    loadUsernameMenu(
+        currentUsername,
+        frameClass
+    );
+
+    loadFrames();
+
+}
+
+
+// ==========================================
+// ZASTOSOWANIE RAMKI
+// ==========================================
+
+function applyProfileFrame(frameClass) {
+
+    const username =
+        document.getElementById(
+            "profile-username"
+        );
+
+    username.classList.remove(
+
+        "frame-none",
+        "frame-pink",
+        "frame-purple",
+        "frame-blue",
+        "frame-mint",
+        "frame-yellow",
+        "frame-white",
+        "frame-black",
+        "frame-gray",
+        "frame-crystal",
+        "frame-royal",
+        "frame-gold",
+        "frame-vip"
+
+    );
+
+    username.classList.add(
+        frameClass
+    );
+
+}
+
+
+// ==========================================
+// WYLOGOWANIE
+// ==========================================
+
+document
+    .getElementById(
+        "logout-button"
+    )
+    .addEventListener(
+        "click",
+        async function() {
+
+            await supabaseClient.auth.signOut();
+
+            window.location.href =
+                "logowanie.html";
+
+        }
+    );
+
+
+// ==========================================
+// START
+// ==========================================
+
+checkLogin();
+
+</script>
+
+</body>
+</html>

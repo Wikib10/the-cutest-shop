@@ -1,0 +1,3428 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Panel administratora - The Cutest Shop</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<nav>
+
+    <a href="index.html">Home</a>
+
+    <a href="nowosci.html">Nowości</a>
+
+    <a href="promocje.html">Promocje</a>
+
+    <a href="misje.html">Misje</a>
+
+    <a href="osiagniecia.html">Osiągnięcia</a>
+
+    <a href="zamowienia.html">Zamówienia</a>
+
+    <a href="koszyk.html">Koszyk🛒</a>
+
+</nav>
+
+
+<h1>👑 Panel administratora</h1>
+
+
+<p id="admin-message">
+    Sprawdzanie uprawnień...
+</p>
+
+
+<div
+    id="admin-panel"
+    style="display: none;"
+>
+
+
+<!-- ========================================== -->
+<!-- ZAMÓWIENIA -->
+<!-- ========================================== -->
+
+<section>
+
+    <h2>📦 Zamówienia</h2>
+
+    <p>
+        Zarządzanie zamówieniami i ich statusami.
+    </p>
+
+    <div id="admin-orders">
+        <p>Ładowanie zamówień...</p>
+    </div>
+
+</section>
+
+
+<!-- ========================================== -->
+<!-- PRODUKTY -->
+<!-- ========================================== -->
+
+<section>
+
+    <h2>🛍️ Produkty</h2>
+
+    <p>
+        Dodawanie, edytowanie i usuwanie produktów.
+    </p>
+
+
+    <button id="add-product-button">
+        ➕ Dodaj produkt
+    </button>
+
+
+    <div
+        id="add-product-form"
+        style="display: none;"
+    >
+
+        <h3>➕ Nowy produkt</h3>
+
+        <input
+            type="text"
+            id="product-name"
+            placeholder="Nazwa produktu"
+        >
+
+        <br><br>
+
+        <input
+            type="text"
+            id="product-category"
+            placeholder="Kategoria produktu"
+        >
+
+        <br><br>
+
+        <textarea
+            id="product-description"
+            placeholder="Opis produktu"
+        ></textarea>
+
+        <br><br>
+
+        <input
+            type="number"
+            id="product-price"
+            placeholder="Cena"
+        >
+
+        <br><br>
+
+        <input
+            type="text"
+            id="product-url"
+            placeholder="Link produktu"
+        >
+
+        <br><br>
+
+        <input
+            type="text"
+            id="product-image"
+            placeholder="Link do zdjęcia"
+        >
+		
+		<label>
+    <input
+        type="checkbox"
+        id="product-is-new"
+    >
+    ✨ Nowość
+</label>
+
+<br><br>
+
+<label>
+    <input
+        type="checkbox"
+        id="product-is-sale"
+    >
+    🔥 Promocja
+</label>
+
+<br><br>
+
+<input
+    type="number"
+    id="product-sale-price"
+    placeholder="Cena promocyjna"
+    min="0"
+    step="0.01"
+>
+
+<br><br>
+
+        <br><br>
+
+        <button id="save-product-button">
+            💾 Zapisz produkt
+        </button>
+
+    </div>
+
+
+    <div
+        id="edit-product-form"
+        style="display: none;"
+    >
+
+        <h3>✏️ Edytuj produkt</h3>
+
+        <input
+            type="text"
+            id="edit-product-name"
+            placeholder="Nazwa produktu"
+        >
+
+        <br><br>
+
+        <input
+            type="text"
+            id="edit-product-category"
+            placeholder="Kategoria produktu"
+        >
+
+        <br><br>
+
+        <textarea
+            id="edit-product-description"
+            placeholder="Opis produktu"
+        ></textarea>
+
+        <br><br>
+
+        <input
+            type="number"
+            id="edit-product-price"
+            placeholder="Cena"
+        >
+
+        <br><br>
+
+        <input
+            type="text"
+            id="edit-product-url"
+            placeholder="Link produktu"
+        >
+
+        <br><br>
+
+        <input
+            type="text"
+            id="edit-product-image"
+            placeholder="Link do zdjęcia"
+        >
+		
+		<label>
+    <input
+        type="checkbox"
+        id="edit-product-is-new"
+    >
+    ✨ Nowość
+</label>
+
+<br><br>
+
+<label>
+    <input
+        type="checkbox"
+        id="edit-product-is-sale"
+    >
+    🔥 Promocja
+</label>
+
+<br><br>
+
+<input
+    type="number"
+    id="edit-product-sale-price"
+    placeholder="Cena promocyjna"
+    min="0"
+    step="0.01"
+>
+
+<br><br>
+
+        <br><br>
+
+        <button id="save-edit-product-button">
+            💾 Zapisz zmiany
+        </button>
+
+        <button id="cancel-edit-product-button">
+            ❌ Anuluj
+        </button>
+
+    </div>
+
+
+    <div id="products-admin">
+        <p>Ładowanie produktów...</p>
+    </div>
+
+</section>
+
+
+<!-- ========================================== -->
+<!-- MISJE -->
+<!-- ========================================== -->
+
+<section>
+
+    <h2>💕 Misje</h2>
+
+    <p>
+        Zarządzanie misjami, nagrodami i ich aktywnością.
+    </p>
+
+
+    <button id="add-mission-button">
+        ➕ Dodaj misję
+    </button>
+
+
+    <div
+        id="add-mission-form"
+        style="display: none;"
+    >
+
+        <h3>➕ Nowa misja</h3>
+
+        <input
+            type="text"
+            id="mission-name"
+            placeholder="Nazwa misji"
+        >
+
+        <br><br>
+
+        <textarea
+            id="mission-description"
+            placeholder="Opis misji"
+        ></textarea>
+
+        <br><br>
+
+        <input
+            type="number"
+            id="mission-reward"
+            placeholder="Nagroda w Miłostkach"
+        >
+
+        <br><br>
+
+        <select id="mission-type">
+
+            <option value="manual">
+                💌 Manualna
+            </option>
+
+            <option value="automatic">
+                ⚙️ Automatyczna
+            </option>
+
+        </select>
+
+        <br><br>
+
+        <button id="save-mission-button">
+            💾 Zapisz misję
+        </button>
+
+        <button id="cancel-mission-button">
+            ❌ Anuluj
+        </button>
+
+    </div>
+
+
+    <h3>⚙️ Zarządzanie misjami</h3>
+
+
+    <div id="missions-admin-list">
+        <p>Ładowanie misji...</p>
+    </div>
+
+
+    <div
+        id="edit-mission-form"
+        style="display: none;"
+    >
+
+        <h3>✏️ Edytuj misję</h3>
+
+        <input
+            type="text"
+            id="edit-mission-name"
+            placeholder="Nazwa misji"
+        >
+
+        <br><br>
+
+        <textarea
+            id="edit-mission-description"
+            placeholder="Opis misji"
+        ></textarea>
+
+        <br><br>
+
+        <input
+            type="number"
+            id="edit-mission-reward"
+            placeholder="Nagroda w Miłostkach"
+            min="0"
+        >
+
+        <br><br>
+
+        <select id="edit-mission-type">
+
+            <option value="manual">
+                💌 Manualna
+            </option>
+
+            <option value="automatic">
+                ⚙️ Automatyczna
+            </option>
+
+        </select>
+
+        <br><br>
+
+        <button id="save-edit-mission-button">
+            💾 Zapisz zmiany
+        </button>
+
+        <button id="cancel-edit-mission-button">
+            ❌ Anuluj
+        </button>
+
+    </div>
+
+
+    <h3>📋 Oczekujące wykonania</h3>
+
+
+    <div id="admin-missions">
+        <p>Ładowanie misji...</p>
+    </div>
+
+</section>
+
+
+<!-- ========================================== -->
+<!-- NOWOŚCI -->
+<!-- ========================================== -->
+
+<section>
+
+    <h2>✨ Nowości</h2>
+
+    <p>
+        Zarządzanie produktami wyświetlanymi jako nowości.
+    </p>
+
+</section>
+
+
+<!-- ========================================== -->
+<!-- PROMOCJE -->
+<!-- ========================================== -->
+
+<section>
+
+    <h2>🏷️ Promocje</h2>
+
+    <p>
+        Zarządzanie promocjami sklepu.
+    </p>
+
+</section>
+
+
+<!-- ========================================== -->
+<!-- ODZNAKI -->
+<!-- ========================================== -->
+
+<section>
+
+    <h2>🏆 Osiągnięcia</h2>
+
+    <p>
+        Zarządzanie odznakami użytkowników.
+    </p>
+
+
+    <button id="add-badge-button">
+        ➕ Dodaj odznakę
+    </button>
+
+
+    <div
+        id="add-badge-form"
+        style="display: none;"
+    >
+
+        <h3>➕ Dodaj odznakę</h3>
+
+<input
+    type="text"
+    id="badge-name"
+    placeholder="Nazwa odznaki"
+>
+
+<br><br>
+
+<textarea
+    id="badge-description"
+    placeholder="Opis odznaki"
+></textarea>
+
+<br><br>
+
+<input
+    type="text"
+    id="badge-icon"
+    placeholder="Ikona, np. 🏆"
+>
+
+<br><br>
+
+<label for="badge-unlock-type">
+    🔓 Warunek zdobycia:
+</label>
+
+<br><br>
+
+<select id="badge-unlock-type">
+
+    <option value="manual">
+        🔧 Ręcznie
+    </option>
+
+    <option value="first_login">
+        🔐 Pierwsze logowanie
+    </option>
+
+    <option value="first_purchase">
+        🛒 Pierwszy zakup
+    </option>
+
+    <option value="mission">
+        🎯 Ukończenie konkretnej misji
+    </option>
+
+    <option value="badge_count">
+        💎 Zdobycie określonej liczby odznak
+    </option>
+
+    <option value="all_badges">
+        👑 Zdobycie wszystkich pozostałych odznak
+    </option>
+
+</select>
+
+<br><br>
+
+<div
+    id="badge-count-field"
+    style="display: none;"
+>
+
+    <label for="badge-unlock-value">
+        💎 Liczba wymaganych odznak:
+    </label>
+
+    <br><br>
+
+    <input
+        type="number"
+        id="badge-unlock-value"
+        min="1"
+        step="1"
+        placeholder="Np. 5"
+    >
+
+</div>
+
+<div
+    id="badge-mission-field"
+    style="display: none;"
+>
+
+    <label for="badge-unlock-mission">
+        🎯 Wybierz misję:
+    </label>
+
+    <br><br>
+
+    <select id="badge-unlock-mission">
+
+        <option value="">
+            -- Wybierz misję --
+        </option>
+
+    </select>
+
+</div>
+
+<br>
+
+<button id="save-badge-button">
+    💾 Dodaj odznakę
+</button>
+
+<button id="cancel-badge-button">
+    ❌ Anuluj
+</button>
+
+    </div>
+
+
+    <h3>⚙️ Zarządzanie odznakami</h3>
+
+
+    <div id="badges-admin-list">
+        <p>Ładowanie odznak...</p>
+    </div>
+
+
+    <div
+        id="edit-badge-form"
+        style="display: none;"
+    >
+
+        <h3>✏️ Edytuj odznakę</h3>
+
+        <input
+            type="text"
+            id="edit-badge-name"
+            placeholder="Nazwa odznaki"
+        >
+
+        <br><br>
+
+        <textarea
+            id="edit-badge-description"
+            placeholder="Opis odznaki"
+        ></textarea>
+
+        <br><br>
+
+        <input
+            type="text"
+            id="edit-badge-icon"
+            placeholder="Ikona, np. 🏆"
+        >
+		
+		<div
+    id="edit-badge-count-field"
+    style="display: none;"
+>
+    <input
+        type="number"
+        id="edit-badge-unlock-value"
+        min="1"
+        placeholder="Liczba wymaganych odznak"
+    >
+</div>
+
+<br>
+
+<div
+    id="edit-badge-mission-field"
+    style="display: none;"
+>
+    <select id="edit-badge-unlock-mission">
+        <option value="">Wybierz misję</option>
+    </select>
+</div>
+
+<br>
+		
+		<select id="edit-badge-unlock-type">
+    <option value="manual">🔧 Ręcznie</option>
+    <option value="first_login">🔐 Pierwsze logowanie</option>
+    <option value="first_purchase">🛒 Pierwszy zakup</option>
+    <option value="mission">🎯 Ukończenie konkretnej misji</option>
+    <option value="badge_count">💎 Zdobycie określonej liczby odznak</option>
+    <option value="all_badges">👑 Zdobycie wszystkich pozostałych odznak</option>
+</select>
+
+<br><br>
+
+        <br><br>
+
+        <button id="save-edit-badge-button">
+            💾 Zapisz zmiany
+        </button>
+
+        <button id="cancel-edit-badge-button">
+            ❌ Anuluj
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ========================================== -->
+<!-- UŻYTKOWNICY -->
+<!-- ========================================== -->
+
+<section>
+
+    <h2>👤 Użytkownicy</h2>
+
+    <p>
+        Podgląd użytkowników i zarządzanie Miłostkami.
+    </p>
+
+</section>
+
+
+<!-- ========================================== -->
+<!-- USTAWIENIA -->
+<!-- ========================================== -->
+
+<section>
+
+    <h2>⚙️ Ustawienia sklepu</h2>
+
+    <p>
+        Ustawienia i konfiguracja The Cutest Shop.
+    </p>
+
+</section>
+
+
+</div>
+
+
+<script>
+
+
+// ==========================================
+// SUPABASE
+// ==========================================
+
+const SUPABASE_URL =
+    "https://peohsktyolhtjdzwjrrk.supabase.co";
+
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_HeAIYFUT37HmOQkZSUr8iw_x_ej8pXN";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+// ==========================================
+// SPRAWDZANIE ADMINA
+// ==========================================
+
+async function checkAdmin() {
+
+    const message =
+        document.getElementById("admin-message");
+
+    const panel =
+        document.getElementById("admin-panel");
+
+
+    const {
+        data: { user },
+        error: userError
+    } =
+        await supabaseClient.auth.getUser();
+
+
+    if (userError || !user) {
+
+        window.location.href =
+            "logowanie.html";
+
+        return false;
+
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient.rpc(
+            "is_admin"
+        );
+
+
+    if (error) {
+
+        console.error(
+            "Błąd sprawdzania uprawnień:",
+            error
+        );
+
+        message.textContent =
+            "Nie udało się sprawdzić uprawnień.";
+
+        return false;
+
+    }
+
+
+    if (!data) {
+
+        message.textContent =
+            "⛔ Nie masz uprawnień administratora.";
+
+        return false;
+
+    }
+
+
+    message.textContent =
+        "Zalogowano jako administrator 👑";
+
+
+    panel.style.display =
+        "block";
+
+
+    return true;
+
+}
+
+
+// ==========================================
+// PRODUKTY
+// ==========================================
+
+let editingProductId = null;
+
+
+async function loadAdminProducts() {
+
+    const container =
+        document.getElementById(
+            "products-admin"
+        );
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("products")
+            .select("*")
+            .order("name");
+
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania produktów:",
+            error
+        );
+
+        container.innerHTML =
+            "<p>Nie udało się pobrać produktów.</p>";
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (!data || data.length === 0) {
+
+        container.innerHTML =
+            "<p>Brak produktów.</p>";
+
+        return;
+
+    }
+
+
+    data.forEach(
+        function(product) {
+
+            const productElement =
+                document.createElement(
+                    "div"
+                );
+
+
+            productElement.classList.add(
+                "admin-product"
+            );
+
+
+            productElement.innerHTML = `
+
+                <h3>
+                    ${product.name}
+                </h3>
+
+                <p>
+                    Kategoria:
+                    ${product.category || ""}
+                </p>
+
+                <p>
+                    ${product.description || ""}
+                </p>
+
+                <p>
+                    Cena:
+                    ${product.price} 💕
+                </p>
+
+                <button class="edit-product">
+                    ✏️ Edytuj
+                </button>
+
+                <button class="delete-product">
+                    🗑️ Usuń
+                </button>
+
+            `;
+
+
+            container.appendChild(
+                productElement
+            );
+
+
+            productElement
+                .querySelector(
+                    ".edit-product"
+                )
+                .addEventListener(
+                    "click",
+                    function() {
+
+                        editingProductId =
+                            product.id;
+
+
+                        document.getElementById(
+                            "edit-product-form"
+                        ).style.display =
+                            "block";
+
+
+                        document.getElementById(
+                            "edit-product-name"
+                        ).value =
+                            product.name || "";
+
+
+                        document.getElementById(
+                            "edit-product-category"
+                        ).value =
+                            product.category || "";
+
+
+                        document.getElementById(
+                            "edit-product-description"
+                        ).value =
+                            product.description || "";
+
+
+                        document.getElementById(
+                            "edit-product-price"
+                        ).value =
+                            product.price ?? "";
+
+
+                        document.getElementById(
+                            "edit-product-url"
+                        ).value =
+                            product.product_url || "";
+
+
+                        document.getElementById(
+                            "edit-product-image"
+                        ).value =
+                            product.image_url || "";
+							
+							document.getElementById(
+    "edit-product-is-new"
+).checked =
+    product.is_new || false;
+
+
+document.getElementById(
+    "edit-product-is-sale"
+).checked =
+    product.is_sale || false;
+
+
+document.getElementById(
+    "edit-product-sale-price"
+).value =
+    product.sale_price ?? "";
+
+                    }
+                );
+
+
+            productElement
+                .querySelector(
+                    ".delete-product"
+                )
+                .addEventListener(
+                    "click",
+                    async function() {
+
+                        const confirmed =
+                            confirm(
+                                "Czy na pewno chcesz usunąć ten produkt? 🗑️"
+                            );
+
+
+                        if (!confirmed) {
+                            return;
+                        }
+
+
+                        const {
+                            error
+                        } =
+                            await supabaseClient
+                                .from("products")
+                                .delete()
+                                .eq(
+                                    "id",
+                                    product.id
+                                );
+
+
+                        if (error) {
+
+                            console.error(
+                                "Błąd usuwania produktu:",
+                                error
+                            );
+
+                            alert(
+                                "Nie udało się usunąć produktu: " +
+                                error.message
+                            );
+
+                            return;
+
+                        }
+
+
+                        alert(
+                            "Produkt został usunięty! 🗑️💕"
+                        );
+
+
+                        await loadAdminProducts();
+
+                    }
+                );
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// DODAWANIE PRODUKTU
+// ==========================================
+
+document.getElementById(
+    "add-product-button"
+).addEventListener(
+    "click",
+    function() {
+
+        const form =
+            document.getElementById(
+                "add-product-form"
+            );
+
+
+        form.style.display =
+            form.style.display === "none"
+                ? "block"
+                : "none";
+
+    }
+);
+
+
+document.getElementById(
+    "save-product-button"
+).addEventListener(
+    "click",
+    async function() {
+
+        const name =
+            document.getElementById(
+                "product-name"
+            ).value.trim();
+
+        const category =
+            document.getElementById(
+                "product-category"
+            ).value.trim();
+
+        const description =
+            document.getElementById(
+                "product-description"
+            ).value.trim();
+
+        const price =
+            Number(
+                document.getElementById(
+                    "product-price"
+                ).value
+            );
+
+        const productUrl =
+            document.getElementById(
+                "product-url"
+            ).value.trim();
+
+        const imageUrl =
+            document.getElementById(
+                "product-image"
+            ).value.trim();
+			
+			const isNew =
+    document.getElementById(
+        "product-is-new"
+    ).checked;
+
+const isSale =
+    document.getElementById(
+        "product-is-sale"
+    ).checked;
+
+const salePrice =
+    Number(
+        document.getElementById(
+            "product-sale-price"
+        ).value
+    );
+
+
+        if (!name) {
+
+            alert(
+                "Podaj nazwę produktu."
+            );
+
+            return;
+
+        }
+
+
+        if (!category) {
+
+            alert(
+                "Podaj kategorię produktu."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !Number.isFinite(price) ||
+            price < 0
+        ) {
+
+            alert(
+                "Podaj prawidłową cenę."
+            );
+
+            return;
+
+        }
+
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("products")
+                .insert({
+
+                    name,
+                    category,
+                    description,
+                    price,
+                    product_url: productUrl,
+                    image_url: imageUrl,
+					is_new: isNew,
+is_sale: isSale,
+sale_price:
+    isSale && Number.isFinite(salePrice)
+        ? salePrice
+        : null
+
+                });
+
+
+        if (error) {
+
+            alert(
+                "Błąd: " +
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "Produkt został dodany! 🛍️💕"
+        );
+
+
+        document.getElementById(
+            "product-name"
+        ).value = "";
+
+        document.getElementById(
+            "product-category"
+        ).value = "";
+
+        document.getElementById(
+            "product-description"
+        ).value = "";
+
+        document.getElementById(
+            "product-price"
+        ).value = "";
+
+        document.getElementById(
+            "product-url"
+        ).value = "";
+
+        document.getElementById(
+            "product-image"
+        ).value = "";
+
+
+        document.getElementById(
+            "add-product-form"
+        ).style.display =
+            "none";
+
+
+        await loadAdminProducts();
+
+    }
+);
+
+
+// ==========================================
+// EDYCJA PRODUKTU
+// ==========================================
+
+document.getElementById(
+    "save-edit-product-button"
+).addEventListener(
+    "click",
+    async function() {
+
+        if (!editingProductId) {
+
+            alert(
+                "Nie wybrano produktu do edycji."
+            );
+
+            return;
+
+        }
+
+
+        const name =
+            document.getElementById(
+                "edit-product-name"
+            ).value.trim();
+
+        const category =
+            document.getElementById(
+                "edit-product-category"
+            ).value.trim();
+
+        const description =
+            document.getElementById(
+                "edit-product-description"
+            ).value.trim();
+
+        const price =
+            Number(
+                document.getElementById(
+                    "edit-product-price"
+                ).value
+            );
+
+        const productUrl =
+            document.getElementById(
+                "edit-product-url"
+            ).value.trim();
+
+        const imageUrl =
+            document.getElementById(
+                "edit-product-image"
+            ).value.trim();
+			
+			const isNew =
+    document.getElementById(
+        "edit-product-is-new"
+    ).checked;
+
+const isSale =
+    document.getElementById(
+        "edit-product-is-sale"
+    ).checked;
+
+const salePrice =
+    Number(
+        document.getElementById(
+            "edit-product-sale-price"
+        ).value
+    );
+
+
+        if (!name || !category) {
+
+            alert(
+                "Nazwa i kategoria są wymagane."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !Number.isFinite(price) ||
+            price < 0
+        ) {
+
+            alert(
+                "Podaj prawidłową cenę."
+            );
+
+            return;
+
+        }
+
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("products")
+                .update({
+
+                    name,
+                    category,
+                    description,
+                    price,
+                    product_url: productUrl,
+                    image_url: imageUrl,
+is_new: isNew,
+is_sale: isSale,
+sale_price:
+    isSale && Number.isFinite(salePrice)
+        ? salePrice
+        : null
+
+                })
+                .eq(
+                    "id",
+                    editingProductId
+                );
+
+
+        if (error) {
+
+            alert(
+                "Błąd: " +
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "Produkt został zaktualizowany! ✏️💕"
+        );
+
+
+        document.getElementById(
+            "edit-product-form"
+        ).style.display =
+            "none";
+
+
+        editingProductId =
+            null;
+
+
+        await loadAdminProducts();
+
+    }
+);
+
+
+document.getElementById(
+    "cancel-edit-product-button"
+).addEventListener(
+    "click",
+    function() {
+
+        document.getElementById(
+            "edit-product-form"
+        ).style.display =
+            "none";
+
+
+        editingProductId =
+            null;
+
+    }
+);
+
+
+// ==========================================
+// MISJE
+// ==========================================
+
+async function loadMissionDefinitions() {
+
+    const container =
+        document.getElementById(
+            "missions-admin-list"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient.rpc(
+            "get_all_missions_for_admin"
+        );
+
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania misji:",
+            error
+        );
+
+        container.innerHTML =
+            "<p>Nie udało się pobrać misji.</p>";
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (!data || data.length === 0) {
+
+        container.innerHTML =
+            "<p>Brak misji.</p>";
+
+        return;
+
+    }
+
+
+    data.forEach(
+        function(mission) {
+
+            const missionBox =
+                document.createElement(
+                    "div"
+                );
+
+
+            missionBox.classList.add(
+                "admin-mission-definition"
+            );
+
+
+            missionBox.innerHTML = `
+
+                <h3>
+                    ${mission.name}
+                </h3>
+
+                <p>
+                    ${mission.description}
+                </p>
+
+                <p>
+                    💕 Nagroda:
+                    ${mission.reward} Miłostek
+                </p>
+
+                <p>
+                    📌 Typ:
+                    ${
+                        mission.type === "manual"
+                            ? "💌 Manualna"
+                            : "⚙️ Automatyczna"
+                    }
+                </p>
+
+                <p>
+                    ${
+                        mission.active
+                            ? "🟢 Aktywna"
+                            : "⚪ Nieaktywna"
+                    }
+                </p>
+
+
+                <button
+                    class="toggle-mission"
+                    data-id="${mission.id}"
+                    data-active="${mission.active}"
+                >
+                    ${
+                        mission.active
+                            ? "⏸️ Dezaktywuj"
+                            : "▶️ Aktywuj"
+                    }
+                </button>
+
+
+                <button
+                    class="edit-mission"
+                    data-id="${mission.id}"
+                    data-name="${mission.name.replace(/"/g, "&quot;")}"
+                    data-description="${mission.description.replace(/"/g, "&quot;")}"
+                    data-reward="${mission.reward}"
+                    data-type="${mission.type}"
+                >
+                    ✏️ Edytuj
+                </button>
+
+
+                <button
+                    class="delete-mission"
+                    data-id="${mission.id}"
+                    data-name="${mission.name.replace(/"/g, "&quot;")}"
+                >
+                    🗑️ Usuń
+                </button>
+
+            `;
+
+
+            container.appendChild(
+                missionBox
+            );
+
+        }
+    );
+
+}
+
+async function loadBadgeMissionOptions() {
+
+    const select =
+    document.getElementById(
+        "badge-unlock-mission"
+    );
+
+const editSelect =
+    document.getElementById(
+        "edit-badge-unlock-mission"
+    );
+
+if (!select && !editSelect) {
+    return;
+}
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient.rpc(
+            "get_all_missions_for_admin"
+        );
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania misji do odznaki:",
+            error
+        );
+
+        return;
+    }
+
+    const missionOptions = `
+    <option value="">
+        -- Wybierz misję --
+    </option>
+`;
+
+if (select) {
+    select.innerHTML =
+        missionOptions;
+}
+
+if (editSelect) {
+    editSelect.innerHTML =
+        missionOptions;
+}
+
+    if (!data) {
+        return;
+    }
+
+    data.forEach(
+        function(mission) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                mission.id;
+
+            option.textContent =
+                `${mission.name} ${
+                    mission.active
+                        ? ""
+                        : "(nieaktywna)"
+                }`;
+
+            if (select) {
+    select.appendChild(
+        option.cloneNode(true)
+    );
+}
+
+if (editSelect) {
+    editSelect.appendChild(
+        option
+    );
+}
+
+        }
+    );
+}
+
+
+// ==========================================
+// DODAWANIE MISJI
+// ==========================================
+
+document.getElementById(
+    "add-mission-button"
+).addEventListener(
+    "click",
+    function() {
+
+        const form =
+            document.getElementById(
+                "add-mission-form"
+            );
+
+
+        form.style.display =
+            form.style.display === "none"
+                ? "block"
+                : "none";
+
+    }
+);
+
+
+document.getElementById(
+    "cancel-mission-button"
+).addEventListener(
+    "click",
+    function() {
+
+        document.getElementById(
+            "add-mission-form"
+        ).style.display =
+            "none";
+
+    }
+);
+
+
+document.getElementById(
+    "save-mission-button"
+).addEventListener(
+    "click",
+    async function() {
+
+        const name =
+            document.getElementById(
+                "mission-name"
+            ).value.trim();
+
+        const description =
+            document.getElementById(
+                "mission-description"
+            ).value.trim();
+
+        const reward =
+            Number(
+                document.getElementById(
+                    "mission-reward"
+                ).value
+            );
+
+        const type =
+            document.getElementById(
+                "mission-type"
+            ).value;
+
+
+        if (!name || !description) {
+
+            alert(
+                "Nazwa i opis są wymagane."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !Number.isInteger(reward) ||
+            reward < 0
+        ) {
+
+            alert(
+                "Podaj prawidłową nagrodę."
+            );
+
+            return;
+
+        }
+
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("missions")
+                .insert({
+
+                    name,
+                    description,
+                    reward,
+                    active: true,
+                    type
+
+                });
+
+
+        if (error) {
+
+            alert(
+                "Nie udało się dodać misji: " +
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "Misja została dodana! 💕🎉"
+        );
+
+
+        document.getElementById(
+            "mission-name"
+        ).value = "";
+
+        document.getElementById(
+            "mission-description"
+        ).value = "";
+
+        document.getElementById(
+            "mission-reward"
+        ).value = "";
+
+        document.getElementById(
+            "mission-type"
+        ).value = "manual";
+
+
+        document.getElementById(
+            "add-mission-form"
+        ).style.display =
+            "none";
+
+
+        await loadMissionDefinitions();
+
+    }
+);
+
+
+// ==========================================
+// OBSŁUGA MISJI
+// ==========================================
+
+document.addEventListener(
+    "click",
+    async function(event) {
+
+
+        // 🗑️ USUWANIE MISJI
+
+        if (
+            event.target.classList.contains(
+                "delete-mission"
+            )
+        ) {
+
+            const button =
+                event.target;
+
+
+            const confirmed =
+                confirm(
+                    `Czy na pewno chcesz usunąć misję:\n\n"${button.dataset.name}"?\n\nTej operacji nie można cofnąć.`
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            button.disabled =
+                true;
+
+
+            const {
+                error
+            } =
+                await supabaseClient.rpc(
+                    "delete_mission_for_admin",
+                    {
+                        p_mission_id:
+                            button.dataset.id
+                    }
+                );
+
+
+            if (error) {
+
+                alert(
+                    error.message
+                );
+
+                button.disabled =
+                    false;
+
+                return;
+
+            }
+
+
+            alert(
+                "Misja została usunięta! 🗑️💕"
+            );
+
+
+            await loadMissionDefinitions();
+
+            return;
+
+        }
+
+
+        // ✏️ EDYCJA MISJI
+
+        if (
+            event.target.classList.contains(
+                "edit-mission"
+            )
+        ) {
+
+            const button =
+                event.target;
+
+
+            const form =
+                document.getElementById(
+                    "edit-mission-form"
+                );
+
+
+            document.getElementById(
+                "edit-mission-name"
+            ).value =
+                button.dataset.name;
+
+
+            document.getElementById(
+                "edit-mission-description"
+            ).value =
+                button.dataset.description;
+
+
+            document.getElementById(
+                "edit-mission-reward"
+            ).value =
+                button.dataset.reward;
+
+
+            document.getElementById(
+                "edit-mission-type"
+            ).value =
+                button.dataset.type;
+
+
+            form.dataset.missionId =
+                button.dataset.id;
+
+
+            form.style.display =
+                "block";
+
+
+            form.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+
+            return;
+
+        }
+
+
+        // 💾 ZAPIS EDYCJI MISJI
+
+        if (
+            event.target.id ===
+            "save-edit-mission-button"
+        ) {
+
+            const form =
+                document.getElementById(
+                    "edit-mission-form"
+                );
+
+
+            const reward =
+                Number(
+                    document.getElementById(
+                        "edit-mission-reward"
+                    ).value
+                );
+
+
+            const name =
+                document.getElementById(
+                    "edit-mission-name"
+                ).value.trim();
+
+
+            const description =
+                document.getElementById(
+                    "edit-mission-description"
+                ).value.trim();
+
+
+            const type =
+                document.getElementById(
+                    "edit-mission-type"
+                ).value;
+
+
+            if (!name || !description) {
+
+                alert(
+                    "Nazwa i opis są wymagane."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                !Number.isInteger(reward) ||
+                reward < 0
+            ) {
+
+                alert(
+                    "Podaj prawidłową nagrodę."
+                );
+
+                return;
+
+            }
+
+
+            event.target.disabled =
+                true;
+
+
+            const {
+                error
+            } =
+                await supabaseClient.rpc(
+                    "update_mission_for_admin",
+                    {
+                        p_mission_id:
+                            form.dataset.missionId,
+
+                        p_name:
+                            name,
+
+                        p_description:
+                            description,
+
+                        p_reward:
+                            reward,
+
+                        p_type:
+                            type
+                    }
+                );
+
+
+            event.target.disabled =
+                false;
+
+
+            if (error) {
+
+                alert(
+                    "Nie udało się zapisać zmian: " +
+                    error.message
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Misja została zaktualizowana! ✨💕"
+            );
+
+
+            form.style.display =
+                "none";
+
+
+            await loadMissionDefinitions();
+
+            return;
+
+        }
+
+
+        // ❌ ANULOWANIE EDYCJI MISJI
+
+        if (
+            event.target.id ===
+            "cancel-edit-mission-button"
+        ) {
+
+            document.getElementById(
+                "edit-mission-form"
+            ).style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        // ⏸️ / ▶️ MISJA
+
+        if (
+            event.target.classList.contains(
+                "toggle-mission"
+            )
+        ) {
+
+            const button =
+                event.target;
+
+
+            const newActive =
+                button.dataset.active !== "true";
+
+
+            button.disabled =
+                true;
+
+
+            const {
+                error
+            } =
+                await supabaseClient.rpc(
+                    "toggle_mission_active",
+                    {
+                        p_mission_id:
+                            button.dataset.id,
+
+                        p_active:
+                            newActive
+                    }
+                );
+
+
+            if (error) {
+
+                alert(
+                    "Nie udało się zmienić aktywności: " +
+                    error.message
+                );
+
+                button.disabled =
+                    false;
+
+                return;
+
+            }
+
+
+            await loadMissionDefinitions();
+
+            return;
+
+        }
+
+    }
+);
+
+
+// ==========================================
+// ODZNAKI
+// ==========================================
+
+async function loadBadgeDefinitions() {
+
+    const container =
+        document.getElementById(
+            "badges-admin-list"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient.rpc(
+            "get_all_badges_for_admin"
+        );
+
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania odznak:",
+            error
+        );
+
+        container.innerHTML =
+            "<p>Nie udało się pobrać odznak.</p>";
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (!data || data.length === 0) {
+
+        container.innerHTML =
+            "<p>Brak odznak.</p>";
+
+        return;
+
+    }
+
+
+    data.forEach(
+        function(badge) {
+
+            const badgeBox =
+                document.createElement(
+                    "div"
+                );
+
+
+            badgeBox.classList.add(
+                "admin-badge-definition"
+            );
+
+
+            badgeBox.innerHTML = `
+
+                <h3>
+                    ${badge.icon}
+                    ${badge.name}
+                </h3>
+
+                <p>
+                    ${badge.description}
+                </p>
+				
+				<p>
+    🔓 Warunek:
+    ${
+        badge.unlock_type === "badge_count"
+            ? `Zdobycie ${badge.unlock_value} odznak`
+            : badge.unlock_type === "mission"
+                ? `Ukończenie misji`
+                : badge.unlock_type === "first_login"
+                    ? "Pierwsze logowanie"
+                    : badge.unlock_type === "first_purchase"
+                        ? "Pierwszy zakup"
+                        : badge.unlock_type === "all_badges"
+                            ? "Zdobycie wszystkich pozostałych odznak"
+                            : "Ręcznie"
+    }
+</p>
+
+                <p>
+                    ${
+                        badge.active
+                            ? "🟢 Aktywna"
+                            : "⚪ Nieaktywna"
+                    }
+                </p>
+
+
+                <button
+                    class="toggle-badge"
+                    data-id="${badge.id}"
+                    data-active="${badge.active}"
+                >
+                    ${
+                        badge.active
+                            ? "⏸️ Dezaktywuj"
+                            : "▶️ Aktywuj"
+                    }
+                </button>
+
+
+                <button
+                    class="edit-badge"
+                    data-id="${badge.id}"
+                    data-name="${badge.name.replace(/"/g, "&quot;")}"
+                    data-description="${badge.description.replace(/"/g, "&quot;")}"
+                    data-icon="${badge.icon.replace(/"/g, "&quot;")}"
+					data-unlock-type="${badge.unlock_type}"
+					data-unlock-value="${badge.unlock_value ?? ""}"
+					data-unlock-mission-id="${badge.unlock_mission_id ?? ""}"
+                >
+                    ✏️ Edytuj
+                </button>
+
+
+                <button
+                    class="delete-badge"
+                    data-id="${badge.id}"
+                    data-name="${badge.name.replace(/"/g, "&quot;")}"
+                >
+                    🗑️ Usuń
+                </button>
+
+            `;
+
+
+            container.appendChild(
+                badgeBox
+            );
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// DODAWANIE ODZNAKI
+// ==========================================
+
+document.getElementById(
+    "add-badge-button"
+).addEventListener(
+    "click",
+    function() {
+
+        const form =
+            document.getElementById(
+                "add-badge-form"
+            );
+
+
+        form.style.display =
+            form.style.display === "none"
+                ? "block"
+                : "none";
+
+    }
+);
+
+
+document.getElementById(
+    "cancel-badge-button"
+).addEventListener(
+    "click",
+    function() {
+
+        document.getElementById(
+            "add-badge-form"
+        ).style.display =
+            "none";
+
+    }
+);
+
+const badgeUnlockType = document.getElementById("badge-unlock-type");
+const badgeCountField = document.getElementById("badge-count-field");
+const badgeMissionField = document.getElementById("badge-mission-field");
+
+function updateBadgeUnlockFields() {
+    const type = badgeUnlockType.value;
+
+    badgeCountField.style.display =
+        type === "badge_count"
+            ? "block"
+            : "none";
+
+    badgeMissionField.style.display =
+        type === "mission"
+            ? "block"
+            : "none";
+}
+
+badgeUnlockType.addEventListener(
+    "change",
+    updateBadgeUnlockFields
+);
+
+updateBadgeUnlockFields();
+
+const editBadgeUnlockType =
+    document.getElementById("edit-badge-unlock-type");
+
+const editBadgeCountField =
+    document.getElementById("edit-badge-count-field");
+
+const editBadgeMissionField =
+    document.getElementById("edit-badge-mission-field");
+
+
+function updateEditBadgeUnlockFields() {
+
+    const type =
+        editBadgeUnlockType.value;
+
+    editBadgeCountField.style.display =
+        type === "badge_count"
+            ? "block"
+            : "none";
+
+    editBadgeMissionField.style.display =
+        type === "mission"
+            ? "block"
+            : "none";
+}
+
+
+editBadgeUnlockType.addEventListener(
+    "change",
+    updateEditBadgeUnlockFields
+);
+
+updateEditBadgeUnlockFields();
+
+document.getElementById(
+    "save-badge-button"
+).addEventListener(
+    "click",
+    async function() {
+
+        const name =
+            document.getElementById(
+                "badge-name"
+            ).value.trim();
+
+
+        const description =
+            document.getElementById(
+                "badge-description"
+            ).value.trim();
+
+
+        const icon =
+            document.getElementById(
+                "badge-icon"
+            ).value.trim();
+
+
+        if (!name || !description || !icon) {
+
+            alert(
+                "Nazwa, opis i ikona są wymagane."
+            );
+
+            return;
+
+        }
+
+
+        const {
+    error
+} =
+    await supabaseClient.rpc(
+        "create_badge_for_admin",
+        {
+            p_name:
+                name,
+
+            p_description:
+                description,
+
+            p_icon:
+                icon,
+
+            p_unlock_type:
+                badgeUnlockType.value,
+
+            p_unlock_value:
+                badgeUnlockType.value === "badge_count"
+                    ? parseInt(
+                        document.getElementById("badge-unlock-value").value,
+                        10
+                    )
+                    : null,
+
+            p_unlock_mission_id:
+                badgeUnlockType.value === "mission"
+                    ? document.getElementById("badge-unlock-mission").value || null
+                    : null
+        }
+    );
+
+
+        if (error) {
+
+            alert(
+                "Nie udało się dodać odznaki: " +
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "Odznaka została dodana! 🏆💕"
+        );
+
+
+        document.getElementById(
+            "badge-name"
+        ).value = "";
+
+        document.getElementById(
+            "badge-description"
+        ).value = "";
+
+        document.getElementById(
+            "badge-icon"
+        ).value = "";
+
+
+        document.getElementById(
+            "add-badge-form"
+        ).style.display =
+            "none";
+
+
+        await loadBadgeDefinitions();
+		
+		
+
+    }
+);
+
+
+// ==========================================
+// OBSŁUGA ODZNAK
+// ==========================================
+
+document.addEventListener(
+    "click",
+    async function(event) {
+
+
+        // ✏️ EDYCJA
+
+        if (
+            event.target.classList.contains(
+                "edit-badge"
+            )
+        ) {
+
+            const button =
+                event.target;
+
+
+            const form =
+                document.getElementById(
+                    "edit-badge-form"
+                );
+
+
+            document.getElementById(
+                "edit-badge-name"
+            ).value =
+                button.dataset.name;
+
+
+            document.getElementById(
+                "edit-badge-description"
+            ).value =
+                button.dataset.description;
+
+
+            document.getElementById(
+                "edit-badge-icon"
+            ).value =
+                button.dataset.icon;
+				
+				document.getElementById(
+    "edit-badge-unlock-type"
+).value =
+    button.dataset.unlockType;
+
+document.getElementById(
+    "edit-badge-unlock-value"
+).value =
+    button.dataset.unlockValue;
+
+document.getElementById(
+    "edit-badge-unlock-mission"
+).value =
+    button.dataset.unlockMissionId;
+
+updateEditBadgeUnlockFields();
+
+
+            form.dataset.badgeId =
+                button.dataset.id;
+
+
+            form.style.display =
+                "block";
+
+
+            form.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+
+            return;
+
+        }
+
+
+        // 💾 ZAPIS EDYCJI
+
+        if (
+            event.target.id ===
+            "save-edit-badge-button"
+        ) {
+
+            const form =
+                document.getElementById(
+                    "edit-badge-form"
+                );
+
+
+            const name =
+                document.getElementById(
+                    "edit-badge-name"
+                ).value.trim();
+
+
+            const description =
+                document.getElementById(
+                    "edit-badge-description"
+                ).value.trim();
+
+
+            const icon =
+                document.getElementById(
+                    "edit-badge-icon"
+                ).value.trim();
+
+
+            if (!name || !description || !icon) {
+
+                alert(
+                    "Nazwa, opis i ikona są wymagane."
+                );
+
+                return;
+
+            }
+
+
+            event.target.disabled =
+                true;
+
+
+            const {
+                error
+            } =
+                await supabaseClient.rpc(
+                    "update_badge_for_admin",
+                    {
+                        p_badge_id:
+                            form.dataset.badgeId,
+
+                        p_name:
+                            name,
+
+                        p_description:
+                            description,
+
+                        p_icon:
+    icon,
+
+p_unlock_type:
+    document.getElementById(
+        "edit-badge-unlock-type"
+    ).value,
+
+p_unlock_value:
+    document.getElementById(
+        "edit-badge-unlock-type"
+    ).value === "badge_count"
+        ? parseInt(
+            document.getElementById(
+                "edit-badge-unlock-value"
+            ).value,
+            10
+        )
+        : null,
+
+p_unlock_mission_id:
+    document.getElementById(
+        "edit-badge-unlock-type"
+    ).value === "mission"
+        ? document.getElementById(
+            "edit-badge-unlock-mission"
+        ).value || null
+        : null
+                    }
+                );
+
+
+            event.target.disabled =
+                false;
+
+
+            if (error) {
+
+                alert(
+                    "Nie udało się zapisać zmian: " +
+                    error.message
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Odznaka została zaktualizowana! ✨🏆"
+            );
+
+
+            form.style.display =
+                "none";
+
+
+            await loadBadgeDefinitions();
+
+            return;
+
+        }
+
+
+        // ❌ ANULOWANIE
+
+        if (
+            event.target.id ===
+            "cancel-edit-badge-button"
+        ) {
+
+            document.getElementById(
+                "edit-badge-form"
+            ).style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        // ⏸️ / ▶️ AKTYWACJA
+
+        if (
+            event.target.classList.contains(
+                "toggle-badge"
+            )
+        ) {
+
+            const button =
+                event.target;
+
+
+            const newActive =
+                button.dataset.active !== "true";
+
+
+            button.disabled =
+                true;
+
+
+            const {
+                error
+            } =
+                await supabaseClient.rpc(
+                    "toggle_badge_active",
+                    {
+                        p_badge_id:
+                            button.dataset.id,
+
+                        p_active:
+                            newActive
+                    }
+                );
+
+
+            if (error) {
+
+                alert(
+                    "Nie udało się zmienić aktywności: " +
+                    error.message
+                );
+
+                button.disabled =
+                    false;
+
+                return;
+
+            }
+
+
+            await loadBadgeDefinitions();
+
+            return;
+
+        }
+
+
+        // 🗑️ USUWANIE
+
+        if (
+            event.target.classList.contains(
+                "delete-badge"
+            )
+        ) {
+
+            const button =
+                event.target;
+
+
+            const confirmed =
+                confirm(
+                    `Czy na pewno chcesz usunąć odznakę:\n\n"${button.dataset.name}"?\n\nTej operacji nie można cofnąć.`
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            button.disabled =
+                true;
+
+
+            const {
+                error
+            } =
+                await supabaseClient.rpc(
+                    "delete_badge_for_admin",
+                    {
+                        p_badge_id:
+                            button.dataset.id
+                    }
+                );
+
+
+            if (error) {
+
+                alert(
+                    error.message
+                );
+
+                button.disabled =
+                    false;
+
+                return;
+
+            }
+
+
+            alert(
+                "Odznaka została usunięta! 🗑️🏆"
+            );
+
+
+            await loadBadgeDefinitions();
+
+        }
+
+    }
+);
+
+
+// ==========================================
+// OCZEKUJĄCE MISJE
+// ==========================================
+
+async function loadAdminMissions() {
+
+    const container =
+        document.getElementById(
+            "admin-missions"
+        );
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("user_missions")
+            .select(`
+                id,
+                user_id,
+                mission_id,
+                completed_at,
+                status
+            `)
+            .eq(
+                "status",
+                "pending"
+            )
+            .order(
+                "completed_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania misji:",
+            error
+        );
+
+        container.innerHTML =
+            "<p>Nie udało się pobrać misji.</p>";
+
+        return;
+
+    }
+
+
+    if (!data || data.length === 0) {
+
+        container.innerHTML =
+            "<p>Brak oczekujących misji. 💕</p>";
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    for (
+        const mission of data
+    ) {
+
+        const {
+            data: profile
+        } =
+            await supabaseClient
+                .from("profiles")
+                .select("username")
+                .eq(
+                    "id",
+                    mission.user_id
+                )
+                .maybeSingle();
+
+
+        const {
+            data: missionData
+        } =
+            await supabaseClient
+                .from("missions")
+                .select(
+                    "name, reward"
+                )
+                .eq(
+                    "id",
+                    mission.mission_id
+                )
+                .maybeSingle();
+
+
+        const element =
+            document.createElement(
+                "div"
+            );
+
+
+        element.classList.add(
+            "admin-mission"
+        );
+
+
+        element.innerHTML = `
+
+            <h3>
+                ${missionData?.name || "💕 Misja"}
+            </h3>
+
+            <p>
+                👤 Użytkownik:
+                ${profile?.username || mission.user_id}
+            </p>
+
+            <p>
+                🎁 Nagroda:
+                ${missionData?.reward || 0} 💕
+            </p>
+
+            <p>
+                📅 Wykonano:
+                ${new Date(
+                    mission.completed_at
+                ).toLocaleString(
+                    "pl-PL"
+                )}
+            </p>
+
+
+            <button
+                class="approve-mission"
+                data-id="${mission.id}"
+            >
+                ✅ Zatwierdź
+            </button>
+
+
+            <button
+                class="reject-mission"
+                data-id="${mission.id}"
+            >
+                ❌ Odrzuć
+            </button>
+
+        `;
+
+
+        container.appendChild(
+            element
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// ZATWIERDZANIE / ODRZUCANIE MISJI
+// ==========================================
+
+document.addEventListener(
+    "click",
+    async function(event) {
+
+
+        if (
+            event.target.classList.contains(
+                "approve-mission"
+            )
+        ) {
+
+            const {
+                error
+            } =
+                await supabaseClient.rpc(
+                    "approve_mission",
+                    {
+                        p_user_mission_id:
+                            event.target.dataset.id
+                    }
+                );
+
+
+            if (error) {
+
+                alert(
+                    "Nie udało się zatwierdzić misji: " +
+                    error.message
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Misja zatwierdzona! Użytkownik otrzymał nagrodę. 💕"
+            );
+
+
+            await loadAdminMissions();
+
+            return;
+
+        }
+
+
+        if (
+            event.target.classList.contains(
+                "reject-mission"
+            )
+        ) {
+
+            const {
+                error
+            } =
+                await supabaseClient.rpc(
+                    "reject_mission",
+                    {
+                        p_user_mission_id:
+                            event.target.dataset.id
+                    }
+                );
+
+
+            if (error) {
+
+                alert(
+                    "Nie udało się odrzucić misji: " +
+                    error.message
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Misja została odrzucona ❌"
+            );
+
+
+            await loadAdminMissions();
+
+        }
+
+    }
+);
+
+
+// ==========================================
+// ZAMÓWIENIA
+// ==========================================
+
+async function loadAdminOrders() {
+
+    const container =
+        document.getElementById(
+            "admin-orders"
+        );
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("orders")
+            .select("*")
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania zamówień:",
+            error
+        );
+
+        container.innerHTML =
+            "<p>Nie udało się pobrać zamówień.</p>";
+
+        return;
+
+    }
+
+
+    if (!data || data.length === 0) {
+
+        container.innerHTML =
+            "<p>Brak zamówień. 🛒</p>";
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    for (
+        const order of data
+    ) {
+
+        const orderElement =
+            document.createElement(
+                "div"
+            );
+
+
+        orderElement.classList.add(
+            "admin-order"
+        );
+
+
+        const {
+            data: items,
+            error: itemsError
+        } =
+            await supabaseClient
+                .from("order_items")
+                .select("*")
+                .eq(
+                    "order_id",
+                    order.id
+                );
+
+
+        if (itemsError) {
+
+            console.error(
+                "Błąd pobierania produktów zamówienia:",
+                itemsError
+            );
+
+            continue;
+
+        }
+
+
+        orderElement.innerHTML = `
+
+            <h3>
+                📦 Zamówienie
+            </h3>
+
+            <p>
+                ID:
+                ${order.id}
+            </p>
+
+            <p>
+                Użytkownik:
+                ${order.user_id}
+            </p>
+
+            <p>
+                Data:
+                ${new Date(
+                    order.created_at
+                ).toLocaleString(
+                    "pl-PL"
+                )}
+            </p>
+
+
+            <h4>
+                🛒 Produkty:
+            </h4>
+
+
+            <div class="admin-order-products"></div>
+
+
+            <p>
+                Razem:
+                ${order.total} 💕
+            </p>
+
+
+            <p>
+                Status:
+            </p>
+
+
+            <select
+                class="order-status"
+            >
+
+                <option
+                    value="pending"
+                    ${order.status === "pending" ? "selected" : ""}
+                >
+                    ⏳ Oczekuje
+                </option>
+
+                <option
+                    value="confirmed"
+                    ${order.status === "confirmed" ? "selected" : ""}
+                >
+                    💕 Potwierdzone
+                </option>
+
+                <option
+                    value="completed"
+                    ${order.status === "completed" ? "selected" : ""}
+                >
+                    ✅ Zrealizowane
+                </option>
+
+                <option
+                    value="cancelled"
+                    ${order.status === "cancelled" ? "selected" : ""}
+                >
+                    ❌ Anulowane
+                </option>
+
+            </select>
+
+        `;
+
+
+        const productsContainer =
+            orderElement.querySelector(
+                ".admin-order-products"
+            );
+
+
+        items.forEach(
+            function(item) {
+
+                const productElement =
+                    document.createElement(
+                        "p"
+                    );
+
+
+                productElement.textContent =
+                    "🛒 " +
+                    item.product_name +
+                    " × " +
+                    item.quantity +
+                    " — " +
+                    (
+                        item.price *
+                        item.quantity
+                    ) +
+                    " 💕";
+
+
+                productsContainer.appendChild(
+                    productElement
+                );
+
+            }
+        );
+
+
+        const statusSelect =
+            orderElement.querySelector(
+                ".order-status"
+            );
+
+
+        statusSelect.addEventListener(
+            "change",
+            async function() {
+
+                const {
+                    error
+                } =
+                    await supabaseClient
+                        .from("orders")
+                        .update({
+                            status:
+                                statusSelect.value
+                        })
+                        .eq(
+                            "id",
+                            order.id
+                        );
+
+
+                if (error) {
+
+                    alert(
+                        "Nie udało się zmienić statusu: " +
+                        error.message
+                    );
+
+                    return;
+
+                }
+
+
+                alert(
+                    "Status zamówienia został zmieniony! 📦💕"
+                );
+
+            }
+        );
+
+
+        container.appendChild(
+            orderElement
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// START PANELU
+// ==========================================
+
+checkAdmin().then(
+    async function(isAdmin) {
+
+        if (!isAdmin) {
+            return;
+        }
+
+
+        await loadAdminProducts();
+
+        await loadAdminOrders();
+
+        await loadAdminMissions();
+
+        await loadMissionDefinitions();
+
+        await loadBadgeDefinitions();
+		
+		await loadBadgeMissionOptions();
+
+    }
+);
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Osiągnięcia - The Cutest Shop</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+/* ==========================================
+   KOLEKCJA ODZNAK
+========================================== */
+
+.badge-collection {
+    width: 92%;
+    max-width: 1000px;
+    margin: 20px auto 35px auto;
+    padding: 14px 24px;
+
+    background: #fff5fa;
+    border: 1px solid #f0d5e4;
+    border-radius: 15px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.badge-collection-text {
+    text-align: left;
+}
+
+.badge-collection h3 {
+    margin: 0 0 3px 0;
+    font-size: 20px;
+}
+
+.badge-collection p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.badge-count {
+    font-size: 26px !important;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+
+/* ==========================================
+   ODZNAKI
+========================================== */
+
+.badge-card {
+    text-align: center;
+}
+
+.badge-icon {
+    font-size: 45px;
+    margin-bottom: 8px;
+}
+
+.badge-locked {
+    opacity: 0.55;
+    filter: grayscale(1);
+}
+
+.badge-status {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="nowosci.html">Nowości</a>
+    <a href="promocje.html">Promocje</a>
+    <a href="misje.html">Misje</a>
+    <a href="osiagniecia.html">Osiągnięcia</a>
+    <a href="zamowienia.html">Zamówienia</a>
+    <a href="koszyk.html">Koszyk 🛒</a>
+</nav>
+
+
+<h1>Osiągnięcia 🏆</h1>
+
+
+<div class="welcome">
+
+    <h2>Twoja kolekcja odznak! 💕</h2>
+
+    <p>
+        Zbieraj odznaki i zostań legendą sklepu! ✨
+    </p>
+
+</div>
+
+
+<!-- ==========================================
+     KOLEKCJA
+========================================== -->
+
+<div id="badge-collection-container"></div>
+
+
+<h2>🏆 Twoje odznaki</h2>
+
+
+<div class="achievements" id="achievements-container">
+
+    <p>
+        Ładowanie odznak... 💕
+    </p>
+
+</div>
+
+
+<script>
+
+
+const SUPABASE_URL =
+    "https://peohsktyolhtjdzwjrrk.supabase.co";
+
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_HeAIYFUT37HmOQkZSUr8iw_x_ej8pXN";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+// ==========================================
+// ŁADOWANIE ODZNAK
+// ==========================================
+
+async function loadBadges() {
+
+    const container =
+        document.getElementById(
+            "achievements-container"
+        );
+
+    const collectionContainer =
+        document.getElementById(
+            "badge-collection-container"
+        );
+
+
+    // ==========================================
+    // SPRAWDZAMY UŻYTKOWNIKA
+    // ==========================================
+
+    const {
+        data: userData,
+        error: userError
+    } = await supabaseClient.auth.getUser();
+
+
+    if (userError || !userData.user) {
+
+        container.innerHTML = `
+            <div class="achievement">
+
+                <h3>🔐 Zaloguj się</h3>
+
+                <p>
+                    Zaloguj się, aby zobaczyć
+                    swoją kolekcję odznak.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    const userId =
+        userData.user.id;
+
+
+    // ==========================================
+    // POBIERAMY WSZYSTKIE ODZNAKI
+    // ==========================================
+
+    const {
+        data: badges,
+        error: badgesError
+    } = await supabaseClient
+        .from("badges")
+        .select("*")
+        .eq("active", true)
+        .order("name");
+
+
+    if (badgesError) {
+
+        console.error(
+            "Błąd pobierania odznak:",
+            badgesError
+        );
+
+        container.innerHTML = `
+            <div class="achievement">
+
+                <h3>😢 Ups!</h3>
+
+                <p>
+                    Nie udało się załadować odznak.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    // ==========================================
+    // POBIERAMY ODZNAKI UŻYTKOWNIKA
+    // ==========================================
+
+    const {
+        data: userBadges,
+        error: userBadgesError
+    } = await supabaseClient
+        .from("user_badges")
+        .select("badge_id, unlocked_at")
+        .eq("user_id", userId);
+
+
+    if (userBadgesError) {
+
+        console.error(
+            "Błąd pobierania kolekcji odznak:",
+            userBadgesError
+        );
+
+        container.innerHTML = `
+            <div class="achievement">
+
+                <h3>😢 Ups!</h3>
+
+                <p>
+                    Nie udało się załadować Twoich odznak.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    // ==========================================
+    // PRZYGOTOWANIE ODZNAK
+    // ==========================================
+
+    const unlockedBadgeIds =
+        new Set(
+            userBadges.map(
+                badge => badge.badge_id
+            )
+        );
+
+
+    const unlockedCount =
+        unlockedBadgeIds.size;
+
+
+    // ==========================================
+    // KOLEKCJA
+    // ==========================================
+
+    collectionContainer.innerHTML = `
+
+        <div class="badge-collection">
+
+            <div class="badge-collection-text">
+
+                <h3>
+                    🏆 Twoja kolekcja
+                </h3>
+
+                <p>
+                    Odblokowane odznaki ✨
+                </p>
+
+            </div>
+
+            <p class="badge-count">
+                ${unlockedCount} / ${badges.length}
+            </p>
+
+        </div>
+
+    `;
+
+
+    // ==========================================
+    // ŁĄCZYMY ODZNAKI Z DATĄ ZDOBYCIA
+    // ==========================================
+
+    const badgesWithStatus =
+        badges.map(function(badge) {
+
+            const userBadge =
+                userBadges.find(
+                    item =>
+                        item.badge_id === badge.id
+                );
+
+
+            return {
+                badge: badge,
+                unlocked: !!userBadge,
+                unlockedAt: userBadge
+                    ? userBadge.unlocked_at
+                    : null
+            };
+
+        });
+
+
+    // ==========================================
+    // SORTOWANIE
+    // ==========================================
+
+    badgesWithStatus.sort(function(a, b) {
+
+        // Zdobyte odznaki zawsze na początku
+        if (a.unlocked && !b.unlocked) {
+            return -1;
+        }
+
+        if (!a.unlocked && b.unlocked) {
+            return 1;
+        }
+
+
+        // Jeżeli obie są zdobyte:
+        // najnowsza zdobyta jest pierwsza
+        if (a.unlocked && b.unlocked) {
+
+            return new Date(b.unlockedAt) -
+                   new Date(a.unlockedAt);
+
+        }
+
+
+        // Niezdobyte zostają alfabetycznie
+        return a.badge.name.localeCompare(
+            b.badge.name,
+            "pl"
+        );
+
+    });
+
+
+    // ==========================================
+    // CZYŚCIMY LISTĘ
+    // ==========================================
+
+    container.innerHTML = "";
+
+
+    // ==========================================
+    // WYŚWIETLAMY ODZNAKI
+    // ==========================================
+
+    badgesWithStatus.forEach(function(item) {
+
+        const badge =
+            item.badge;
+
+        const unlocked =
+            item.unlocked;
+
+
+        const element =
+            document.createElement("div");
+
+
+        element.className =
+            "achievement badge-card";
+
+
+        // ======================================
+        // ODZNAKA ZDOBYTA
+        // ======================================
+
+        if (unlocked) {
+
+            element.innerHTML = `
+
+                <div class="badge-icon">
+                    ${badge.icon}
+                </div>
+
+                <h3>
+                    ${badge.name}
+                </h3>
+
+                <p>
+                    ${badge.description}
+                </p>
+
+                <div class="badge-status">
+                    🏆 Odblokowane!
+                </div>
+
+            `;
+
+        }
+
+
+        // ======================================
+        // ODZNAKA NIEZDOBYTA
+        // ======================================
+
+        else {
+
+            element.classList.add(
+                "badge-locked"
+            );
+
+
+            element.innerHTML = `
+
+                <div class="badge-icon">
+                    🔒
+                </div>
+
+                <h3>
+                    ${badge.name}
+                </h3>
+
+                <p>
+                    ${badge.description}
+                </p>
+
+                <div class="badge-status">
+                    🔒 Jeszcze niezdobyte
+                </div>
+
+            `;
+
+        }
+
+
+        container.appendChild(
+            element
+        );
+
+    });
+
+}
+
+
+// ==========================================
+// START
+// ==========================================
+
+loadBadges();
+
+</script>
+
+</body>
+
+</html>

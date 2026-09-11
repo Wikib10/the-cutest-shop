@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+
+<title>The Cutest Shop</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+
+<nav>
+
+<a href="index.html">Home</a>
+
+<a href="nowosci.html">Nowości</a>
+
+<a href="promocje.html">Promocje</a>
+
+<a href="misje.html">Misje</a>
+
+<a href="osiagniecia.html">Osiągnięcia</a>
+
+<a href="zamowienia.html">Zamówienia</a>
+
+<a href="koszyk.html">Koszyk🛒</a>
+
+<a href="ulubione.html">Ulubione❤️</a>
+
+<a
+    href="profil.html"
+    id="username-link"
+    class="username-link frame-none"
+>
+    👤 Ładowanie...
+</a>
+
+</nav>
+
+
+<h1 id="product-title">
+    Ładowanie...
+</h1>
+
+
+<div class="product-page">
+
+
+    <img
+        id="product-image"
+        src=""
+        alt=""
+    >
+
+
+    <div class="product-info">
+
+
+        <p class="delivery-info">
+            📦 Czas realizacji zamówienia: 1–3 dni robocze
+        </p>
+
+
+        <h2 id="product-name">
+            Ładowanie...
+        </h2>
+
+
+        <p id="product-description">
+            Ładowanie...
+        </p>
+
+
+        <p
+            class="price"
+            id="product-price"
+        >
+            0💕
+        </p>
+
+
+        <button
+            class="add-to-cart"
+            id="add-to-cart-button"
+            type="button"
+        >
+            Dodaj do koszyka
+        </button>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+const SUPABASE_URL =
+    "https://peohsktyolhtjdzwjrrk.supabase.co";
+
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_HeAIYFUT37HmOQkZSUr8iw_x_ej8pXN";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+
+// ==========================================
+// KLASY RAMEK
+// ==========================================
+
+const frameClasses = [
+
+    "frame-none",
+    "frame-pink",
+    "frame-purple",
+    "frame-blue",
+    "frame-mint",
+    "frame-yellow",
+    "frame-white",
+    "frame-black",
+    "frame-gray",
+    "frame-crystal",
+    "frame-royal",
+    "frame-gold",
+    "frame-vip"
+
+];
+
+
+
+// ==========================================
+// POBIERANIE NICKU + RAMKI
+// ==========================================
+
+async function loadUsername() {
+
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+
+    if (!user) {
+        return;
+    }
+
+
+    const { data, error } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "username, username_frame"
+            )
+            .eq("id", user.id)
+            .single();
+
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania profilu:",
+            error
+        );
+
+        return;
+    }
+
+
+    const usernameLink =
+        document.getElementById(
+            "username-link"
+        );
+
+
+    usernameLink.textContent =
+        "👤 " + data.username;
+
+
+    frameClasses.forEach(
+        function(frameClass) {
+
+            usernameLink.classList.remove(
+                frameClass
+            );
+
+        }
+    );
+
+
+    const selectedFrame =
+        data.username_frame ||
+        "frame-none";
+
+
+    usernameLink.classList.add(
+        selectedFrame
+    );
+
+}
+
+
+
+// ==========================================
+// ID PRODUKTU Z ADRESU
+// ==========================================
+
+function getProductId() {
+
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    return params.get("id");
+
+}
+
+
+
+// ==========================================
+// POBIERANIE PRODUKTU
+// ==========================================
+
+async function loadProduct() {
+
+
+    const productId =
+        getProductId();
+
+
+    if (!productId) {
+
+        document.getElementById(
+            "product-title"
+        ).textContent =
+            "Nie znaleziono produktu 😢";
+
+        return;
+    }
+
+
+    const { data, error } =
+        await supabaseClient
+            .from("products")
+            .select("*")
+            .eq("id", productId)
+            .single();
+
+
+    if (error || !data) {
+
+        console.error(
+            "Błąd pobierania produktu:",
+            error
+        );
+
+
+        document.getElementById(
+            "product-title"
+        ).textContent =
+            "Nie znaleziono produktu 😢";
+
+        return;
+    }
+
+
+
+    // ==========================================
+    // TYTUŁ STRONY
+    // ==========================================
+
+    document.title =
+        data.name +
+        " — The Cutest Shop";
+
+
+
+    // ==========================================
+    // NAGŁÓWEK
+    // ==========================================
+
+    document.getElementById(
+        "product-title"
+    ).textContent =
+        data.name;
+
+
+
+    // ==========================================
+    // NAZWA PRODUKTU
+    // ==========================================
+
+    document.getElementById(
+        "product-name"
+    ).textContent =
+        data.name;
+
+
+
+    // ==========================================
+    // ZDJĘCIE
+    // ==========================================
+
+    const image =
+        document.getElementById(
+            "product-image"
+        );
+
+
+    image.src =
+        data.image_url;
+
+
+    image.alt =
+        data.name;
+
+
+
+    // ==========================================
+    // OPIS
+    // ==========================================
+
+    document.getElementById(
+        "product-description"
+    ).textContent =
+        data.description;
+
+
+
+    // ==========================================
+    // CENA
+    // ==========================================
+
+    const productPrice =
+        document.getElementById(
+            "product-price"
+        );
+
+
+    const hasSalePrice =
+        data.sale_price !== null &&
+        data.sale_price !== undefined &&
+        data.sale_price !== "" &&
+        Number(data.sale_price) <
+        Number(data.price);
+
+
+    if (hasSalePrice) {
+
+        productPrice.innerHTML = `
+
+            <del
+                style="
+                    text-decoration: line-through !important;
+                    display: inline-block;
+                "
+            >
+                ${data.price}💕
+            </del>
+
+            <strong>
+                ${data.sale_price}💕
+            </strong>
+
+        `;
+
+    } else {
+
+        productPrice.textContent =
+            data.price + "💕";
+
+    }
+
+
+
+    // ==========================================
+    // PRZYCISK KOSZYKA
+    // ==========================================
+
+    const button =
+        document.getElementById(
+            "add-to-cart-button"
+        );
+
+
+    button.dataset.id =
+        data.id;
+
+
+    button.dataset.product =
+        data.name;
+
+
+    // ==========================================
+    // CENA DO KOSZYKA
+    // ==========================================
+
+    // Cena faktycznie płacona
+
+    button.dataset.price =
+        hasSalePrice
+            ? data.sale_price
+            : data.price;
+
+
+    // Cena przed promocją
+
+    button.dataset.originalPrice =
+        data.price;
+
+
+    // ==========================================
+    // ZDJĘCIE
+    // ==========================================
+
+    button.dataset.image =
+        data.image_url;
+
+}
+
+
+
+// ==========================================
+// SPRAWDZENIE LOGOWANIA
+// ==========================================
+
+async function checkLogin() {
+
+
+    const { data, error } =
+        await supabaseClient.auth.getSession();
+
+
+    if (error || !data.session) {
+
+        window.location.href =
+            "logowanie.html";
+
+        return false;
+    }
+
+
+    return true;
+
+}
+
+
+
+// ==========================================
+// START
+// ==========================================
+
+async function startPage() {
+
+
+    const loggedIn =
+        await checkLogin();
+
+
+    if (!loggedIn) {
+        return;
+    }
+
+
+    await loadUsername();
+
+
+    await loadProduct();
+
+}
+
+
+startPage();
+
+
+</script>
+
+
+<script src="script.js"></script>
+
+
+</body>
+</html>

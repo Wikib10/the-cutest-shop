@@ -1,0 +1,1231 @@
+body {
+    background-color: #fff5fa;
+    color: #5a3d4a;
+}
+
+h1 {
+    text-align: center;
+    font-size: 40px;
+    font-family: Georgia, sans-serif;
+}
+
+nav {
+    text-align: center;
+}
+
+nav a {
+    margin: 10px;
+    text-decoration: none;
+    background-color: #f8d7e5;
+    padding: 8px 12px;
+    border-radius: 30px;
+    display: inline-block;
+    transition: 0.2s;
+    color: #5a3d4a;
+}
+
+nav a:hover {
+    background-color: #f2b6cf;
+    transform: scale(1.05);
+}
+
+
+/* ==========================================
+   PRODUKTY
+========================================== */
+
+.product {
+    background-color: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.product:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.product img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.products {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    padding: 20px;
+}
+
+.product h3 {
+    text-align: center;
+    font-size: 22px;
+    margin: 15px 0;
+}
+
+.product a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.description {
+    min-height: 70px;
+}
+
+.price {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #d66b9a;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+
+/* ==========================================
+   NAGŁÓWKI
+========================================== */
+
+h2 {
+    text-align: center;
+    font-size: 30px;
+    color: #d66b9a;
+    margin: 30px 0;
+}
+
+
+/* ==========================================
+   PRZYCISK KOSZYKA
+========================================== */
+
+.add-to-cart {
+    background-color: #f8d7e5;
+    color: #5a3d4a;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: auto;
+}
+
+.add-to-cart:hover {
+    background-color: #f2b6cf;
+    transform: scale(1.05);
+}
+
+
+/* ==========================================
+   STRONA PRODUKTU
+========================================== */
+
+.product-page {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.product-page img {
+    width: 100%;
+    border-radius: 20px;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+/* ==========================================
+   POWIADOMIENIA
+========================================== */
+
+.notification {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background-color: #f8d7e5;
+    color: #5a3d4a;
+    padding: 15px 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    font-weight: bold;
+}
+
+
+/* ==========================================
+   KOSZYK
+========================================== */
+
+.cart-item {
+    background-color: white;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    max-width: 700px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.cart-item-image {
+    width: 100px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 14px;
+    flex-shrink: 0;
+}
+
+.cart-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.cart-item-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #5a3d4a;
+    word-break: break-word;
+}
+
+.cart-item-price {
+    color: #d66b9a;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.quantity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.quantity button {
+    background-color: #f8d7e5;
+    color: #5a3d4a;
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.2s;
+}
+
+.quantity button:hover {
+    background-color: #f2b6cf;
+    transform: scale(1.08);
+}
+
+.quantity span {
+    min-width: 20px;
+    text-align: center;
+    font-weight: bold;
+    color: #5a3d4a;
+}
+
+.remove {
+    border: none;
+    background: #fff0f5;
+    color: #c45b87;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.2s;
+    flex-shrink: 0;
+}
+
+.remove:hover {
+    background: #f8d7e5;
+    transform: scale(1.08);
+}
+
+#cart-summary {
+    background-color: white;
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+}
+
+.delivery-info {
+    margin: 0 0 20px;
+    color: #7a5a68;
+}
+
+.cart-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 22px;
+    color: #5a3d4a;
+    margin-bottom: 20px;
+}
+
+.cart-total-row strong {
+    color: #d66b9a;
+}
+
+#checkout-button {
+    width: 100%;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 15px;
+    background-color: #f8d7e5;
+    color: #5a3d4a;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#checkout-button:hover {
+    background-color: #f2b6cf;
+    transform: translateY(-2px);
+}
+
+#cart-items:empty {
+    min-height: 40px;
+}
+
+#cart-items:not(:has(.cart-item)) {
+    text-align: center;
+    color: #7a5a68;
+    font-size: 18px;
+    margin: 40px auto;
+}
+
+@media (max-width: 600px) {
+
+    .cart-item {
+        padding: 15px;
+        gap: 12px;
+    }
+
+    .cart-item-image {
+        width: 75px;
+        height: 60px;
+    }
+
+    .cart-item-name {
+        font-size: 17px;
+    }
+
+    .cart-item-price {
+        font-size: 14px;
+    }
+	
+	.unit-price {
+    color: #aaa;
+    font-size: 14px;
+    font-weight: normal;
+    margin-right: 8px;
+}
+
+.cart-item-price strong {
+    color: #d66b9a;
+    font-size: 16px;
+}
+
+    .quantity {
+        gap: 5px;
+    }
+
+    .quantity button {
+        width: 30px;
+        height: 30px;
+    }
+
+    .remove {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    #cart-summary {
+        margin: 20px 10px;
+        padding: 20px;
+    }
+}
+
+.empty-cart {
+    background-color: white;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 40px 25px;
+    border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.empty-cart-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+.empty-cart h2 {
+    color: #5a3d4a;
+    margin-bottom: 10px;
+}
+
+.empty-cart p {
+    color: #7a5a68;
+    margin-bottom: 25px;
+}
+
+.empty-cart-button {
+    display: inline-block;
+    padding: 12px 22px;
+    border-radius: 15px;
+    background-color: #f8d7e5;
+    color: #5a3d4a;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.empty-cart-button:hover {
+    background-color: #f2b6cf;
+    transform: translateY(-2px);
+}
+
+/* ==========================================
+   WELCOME
+========================================== */
+
+.welcome {
+    background-color: white;
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 25px;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.welcome h2 {
+    margin: 0 0 10px;
+    font-size: 28px;
+}
+
+.welcome p {
+    margin: 0;
+    font-size: 17px;
+}
+
+
+/* ==========================================
+   MISJE
+========================================== */
+
+.missions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto 30px;
+}
+
+.mission {
+    background-color: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: 0.2s;
+}
+
+.mission:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.mission h3 {
+    font-size: 21px;
+    margin-top: 5px;
+    color: #5a3d4a;
+}
+
+.mission p {
+    min-height: 45px;
+    line-height: 1.5;
+}
+
+.mission-button {
+    background-color: #f8d7e5;
+    color: #5a3d4a;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.mission-button:hover {
+    background-color: #f2b6cf;
+    transform: scale(1.05);
+}
+
+.mission-button:disabled {
+    background-color: #d8c7cf;
+    color: #6b5961;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* ==========================================
+   OSIĄGNIĘCIA
+========================================== */
+
+.achievements {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto 30px;
+}
+
+.achievement {
+    background-color: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: 0.2s;
+}
+
+.achievement:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.achievement h3 {
+    font-size: 21px;
+    color: #5a3d4a;
+    margin-top: 5px;
+}
+
+.achievement p {
+    min-height: 45px;
+    line-height: 1.5;
+}
+
+.achievement-status {
+    display: inline-block;
+    background-color: #f8d7e5;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    color: #5a3d4a;
+}
+
+
+/* ==========================================
+   KOLEKCJA ODZNAK
+========================================== */
+
+.badge-collection {
+    width: 90%;
+    max-width: 1000px;
+    height: 65px;
+    margin: 20px auto;
+    padding: 0 25px;
+
+    background: #fff3f8;
+    border: 1px solid #f0d6e5;
+    border-radius: 12px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.badge-collection h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.badge-collection p {
+    margin: 0;
+}
+
+.badge-count {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+
+/* ==========================================
+   MIŁOSTKI
+========================================== */
+
+#milostki-display {
+    width: fit-content;
+    margin: 18px auto 25px;
+    padding: 10px 20px;
+
+    background-color: #fff;
+    border: 2px solid #f0c4d8;
+    border-radius: 30px;
+
+    color: #d66b9a;
+    font-size: 18px;
+    font-weight: bold;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+#milostki-amount {
+    font-size: 20px;
+}
+
+
+/* ==========================================
+   PROFIL
+========================================== */
+
+.profile {
+    max-width: 800px;
+    margin: 30px auto;
+    text-align: center;
+}
+
+.profile-card {
+    background-color: white;
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.profile-username {
+    display: inline-block;
+
+    padding: 10px 24px;
+
+    border: 3px solid #f2b6cf;
+    border-radius: 25px;
+
+    background-color: #fff5fa;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+
+    font-size: 28px;
+    font-weight: bold;
+
+    margin-bottom: 25px;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-item {
+    width: 100%;
+    max-width: 400px;
+    padding: 15px 20px;
+
+    background-color: #fff5fa;
+
+    border-radius: 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.profile-item strong {
+    color: #d66b9a;
+}
+
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.profile-actions a,
+.profile-actions button {
+    background-color: #f8d7e5;
+    color: #5a3d4a;
+    border: none;
+
+    padding: 10px 18px;
+
+    border-radius: 20px;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    font-size: 15px;
+
+    transition: 0.2s;
+}
+
+.profile-actions a:hover,
+.profile-actions button:hover {
+    background-color: #f2b6cf;
+    transform: scale(1.05);
+}
+
+
+/* ==========================================
+   RAMKI NICKU
+========================================== */
+
+.frame-none {
+    border: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.frame-pink {
+    border: 3px solid #f2b6cf !important;
+    background-color: #fff5fa !important;
+}
+
+.frame-purple {
+    border: 3px solid #c9a7e8 !important;
+    background-color: #faf5ff !important;
+}
+
+.frame-blue {
+    border: 3px solid #9ec9f5 !important;
+    background-color: #f4f9ff !important;
+}
+
+.frame-mint {
+    border: 3px solid #9edcc5 !important;
+    background-color: #f3fffa !important;
+}
+
+.frame-yellow {
+    border: 3px solid #f1d77a !important;
+    background-color: #fffdf0 !important;
+}
+
+.frame-white {
+    border: 3px solid #dcdcdc !important;
+    background-color: #ffffff !important;
+}
+
+.frame-black {
+    border: 3px solid #333333 !important;
+    background-color: #f5f5f5 !important;
+}
+
+.frame-gray {
+    border: 3px solid #999999 !important;
+    background-color: #f5f5f5 !important;
+}
+
+.frame-crystal {
+    border: 3px solid #9edff5 !important;
+    background-color: #f3fcff !important;
+    box-shadow: 0 0 12px rgba(120, 210, 240, 0.45) !important;
+}
+
+.frame-royal {
+    border: 3px solid #c9a227 !important;
+    background-color: #fffbea !important;
+    box-shadow: 0 0 12px rgba(201, 162, 39, 0.35) !important;
+}
+
+.frame-gold {
+    border: 3px solid #e0ad32 !important;
+    background-color: #fff9df !important;
+    box-shadow: 0 0 14px rgba(224, 173, 50, 0.45) !important;
+}
+
+.frame-vip {
+    border: 3px solid #9b7bea !important;
+    background-color: #faf7ff !important;
+    box-shadow: 0 0 16px rgba(155, 123, 234, 0.5) !important;
+}
+
+
+/* ==========================================
+   NICK W MENU
+========================================== */
+
+.username-link {
+    display: inline-block;
+
+    padding: 8px 16px;
+
+    border-radius: 25px;
+
+    font-weight: bold;
+    text-decoration: none;
+
+    transition: 0.2s;
+}
+
+
+/* ==========================================
+   KOLORY NICKÓW NA PROFILU
+========================================== */
+
+.profile-username.frame-none {
+    color: #5a3d4a !important;
+}
+
+.profile-username.frame-pink {
+    color: #d66b9a !important;
+}
+
+.profile-username.frame-purple {
+    color: #9b6bc7 !important;
+}
+
+.profile-username.frame-blue {
+    color: #5794d6 !important;
+}
+
+.profile-username.frame-mint {
+    color: #55aa87 !important;
+}
+
+.profile-username.frame-yellow {
+    color: #c49b25 !important;
+}
+
+.profile-username.frame-white {
+    color: #bdbdbd !important;
+}
+
+.profile-username.frame-black {
+    color: #333333 !important;
+}
+
+.profile-username.frame-gray {
+    color: #777777 !important;
+}
+
+.profile-username.frame-crystal {
+    color: #55b9d8 !important;
+}
+
+.profile-username.frame-royal {
+    color: #b38a20 !important;
+}
+
+.profile-username.frame-gold {
+    color: #d49b19 !important;
+}
+
+.profile-username.frame-vip {
+    color: #8b68d6 !important;
+}
+
+
+/* ==========================================
+   KOLORY NICKÓW W PODGLĄDACH
+========================================== */
+
+.frame-preview.frame-none {
+    color: #5a3d4a !important;
+}
+
+.frame-preview.frame-pink {
+    color: #d66b9a !important;
+}
+
+.frame-preview.frame-purple {
+    color: #9b6bc7 !important;
+}
+
+.frame-preview.frame-blue {
+    color: #5794d6 !important;
+}
+
+.frame-preview.frame-mint {
+    color: #55aa87 !important;
+}
+
+.frame-preview.frame-yellow {
+    color: #c49b25 !important;
+}
+
+.frame-preview.frame-white {
+    color: #bdbdbd !important;
+}
+
+.frame-preview.frame-black {
+    color: #333333 !important;
+}
+
+.frame-preview.frame-gray {
+    color: #777777 !important;
+}
+
+.frame-preview.frame-crystal {
+    color: #55b9d8 !important;
+}
+
+.frame-preview.frame-royal {
+    color: #b38a20 !important;
+}
+
+.frame-preview.frame-gold {
+    color: #d49b19 !important;
+}
+
+.frame-preview.frame-vip {
+    color: #8b68d6 !important;
+}
+
+
+/* ==========================================
+   WYBÓR RAMEK
+========================================== */
+
+.profile-frame-section {
+    margin-top: 30px;
+}
+
+.profile-frame-section h3 {
+    color: #d66b9a;
+    font-size: 22px;
+}
+
+#frames-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.frame-option {
+    border: 2px solid #f0d6e5;
+    background-color: white;
+
+    border-radius: 20px;
+
+    padding: 15px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+    color: #5a3d4a;
+}
+
+.frame-option:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+}
+
+.frame-option.selected {
+    border: 3px solid #d66b9a;
+    box-shadow: 0 0 12px rgba(214, 107, 154, 0.25);
+}
+
+.frame-option.locked {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.frame-preview {
+    display: inline-block;
+
+    padding: 8px 14px;
+
+    border-radius: 20px;
+
+    margin-bottom: 10px;
+
+    font-weight: bold;
+}
+
+.frame-option strong {
+    display: block;
+    margin-top: 5px;
+}
+
+
+/* ==========================================
+   RESPONSYWNOŚĆ
+========================================== */
+
+@media (max-width: 700px) {
+
+    .product-page {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin: 20px auto;
+        padding: 15px;
+    }
+
+    .product-page img {
+        max-height: 350px;
+        object-fit: cover;
+    }
+
+    .product-info {
+        text-align: center;
+    }
+
+    .product-info h2 {
+        margin-top: 10px;
+    }
+
+    .product-info .price {
+        font-size: 24px;
+    }
+
+    .product-info .add-to-cart {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    .missions {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+
+    .mission {
+        padding: 18px;
+    }
+
+    .achievements {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+
+    .achievement {
+        padding: 18px;
+    }
+
+    #frames-container {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* ==========================================
+   RAMKI W MENU - NAJWAŻNIEJSZE
+========================================== */
+
+.username-link.frame-none {
+    color: #5a3d4a !important;
+    border: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.username-link.frame-pink {
+    color: #d66b9a !important;
+    border: 3px solid #f2b6cf !important;
+    background-color: #fff5fa !important;
+}
+
+.username-link.frame-purple {
+    color: #9b6bc7 !important;
+    border: 3px solid #c9a7e8 !important;
+    background-color: #faf5ff !important;
+}
+
+.username-link.frame-blue {
+    color: #5794d6 !important;
+    border: 3px solid #9ec9f5 !important;
+    background-color: #f4f9ff !important;
+}
+
+.username-link.frame-mint {
+    color: #55aa87 !important;
+    border: 3px solid #9edcc5 !important;
+    background-color: #f3fffa !important;
+}
+
+.username-link.frame-yellow {
+    color: #c49b25 !important;
+    border: 3px solid #f1d77a !important;
+    background-color: #fffdf0 !important;
+}
+
+.username-link.frame-white {
+    color: #bdbdbd !important;
+    border: 3px solid #dcdcdc !important;
+    background-color: #ffffff !important;
+}
+
+.username-link.frame-black {
+    color: #333333 !important;
+    border: 3px solid #333333 !important;
+    background-color: #f5f5f5 !important;
+}
+
+.username-link.frame-gray {
+    color: #777777 !important;
+    border: 3px solid #999999 !important;
+    background-color: #f5f5f5 !important;
+}
+
+.username-link.frame-crystal {
+    color: #55b9d8 !important;
+    border: 3px solid #9edff5 !important;
+    background-color: #f3fcff !important;
+    box-shadow: 0 0 12px rgba(120, 210, 240, 0.45) !important;
+}
+
+.username-link.frame-royal {
+    color: #b38a20 !important;
+    border: 3px solid #c9a227 !important;
+    background-color: #fffbea !important;
+    box-shadow: 0 0 12px rgba(201, 162, 39, 0.35) !important;
+}
+
+.username-link.frame-gold {
+    color: #d49b19 !important;
+    border: 3px solid #e0ad32 !important;
+    background-color: #fff9df !important;
+    box-shadow: 0 0 14px rgba(224, 173, 50, 0.45) !important;
+}
+
+.username-link.frame-vip {
+    color: #8b68d6 !important;
+    border: 3px solid #9b7bea !important;
+    background-color: #faf7ff !important;
+    box-shadow: 0 0 16px rgba(155, 123, 234, 0.5) !important;
+}
+
+/* ==========================================
+   SERDUSZKO ULUBIONYCH NA ZDJĘCIU
+   ========================================== */
+
+.product {
+    position: relative;
+}
+
+.favorite-button {
+    position: absolute;
+
+    right: 10px;
+    top: 10px;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+    border: none;
+
+    background: white;
+
+    font-size: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    z-index: 10;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.favorite-button:hover {
+    transform: scale(1.1);
+
+    box-shadow:
+        0 5px 14px rgba(0, 0, 0, 0.2);
+}
+
+.favorites-products {
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.welcome-bonus {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(90, 61, 74, 0.25);
+    z-index: 9999;
+}
+
+.welcome-bonus-box {
+    width: 90%;
+    max-width: 450px;
+    padding: 35px;
+    box-sizing: border-box;
+    text-align: center;
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.welcome-bonus-box h2 {
+    margin-top: 0;
+}
+
+.welcome-bonus-box p {
+    font-size: 18px;
+}
+
+#claim-welcome-bonus {
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    background-color: #f8d7e5;
+    color: #5a3d4a;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-welcome-bonus {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+
+    border: none;
+    background: none;
+
+    font-size: 20px;
+    color: #5a3d4a;
+
+    cursor: pointer;
+}
+
+.welcome-bonus-box {
+    position: relative;
+}

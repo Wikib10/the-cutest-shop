@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>The Cutest Shop</title>
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+<body>
+
+<h1>The Cutest Shop</h1>
+
+<div class="welcome">
+    <h2>Witaj w moim sklepie! 馃挄</h2>
+    <p>Mi艂o Ci臋 widzie膰! Zobacz, co dla Ciebie przygotowa艂am 馃グ</p>
+</div>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="nowosci.html">Nowo艣ci</a>
+    <a href="promocje.html">Promocje</a>
+    <a href="misje.html">Misje</a>
+    <a href="osiagniecia.html">Osi膮gni臋cia</a>
+    <a href="zamowienia.html">Zam贸wienia</a>
+    <a href="koszyk.html">Koszyk馃洅</a>
+    <a href="ulubione.html">Ulubione鉂わ笍</a>
+
+    <a href="profil.html"
+       id="username-link"
+       class="username-link frame-none">
+        馃懁 艁adowanie...
+    </a>
+</nav>
+
+<div id="milostki-display">
+    馃挄 Mi艂ostki:
+    <span id="milostki-amount">0</span>
+</div>
+
+<h2>Produkty</h2>
+
+<div class="products" id="products-container">
+    <p>艁adowanie produkt贸w...</p>
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+    "https://peohsktyolhtjdzwjrrk.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_HeAIYFUT37HmOQkZSUr8iw_x_ej8pXN";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+// ==========================================
+// KLASY RAMEK
+// ==========================================
+
+const frameClasses = [
+
+    "frame-none",
+    "frame-pink",
+    "frame-purple",
+    "frame-blue",
+    "frame-mint",
+    "frame-yellow",
+    "frame-white",
+    "frame-black",
+    "frame-gray",
+    "frame-crystal",
+    "frame-royal",
+    "frame-gold",
+    "frame-vip"
+
+];
+
+
+// ==========================================
+// SPRAWDZENIE LOGOWANIA
+// ==========================================
+
+async function checkLogin() {
+
+    const { data, error } =
+        await supabaseClient.auth.getSession();
+
+    if (error || !data.session) {
+
+        window.location.href =
+            "logowanie.html";
+
+        return;
+    }
+
+    loadUsername();
+}
+
+
+// ==========================================
+// POBIERANIE NICKU + RAMKI
+// ==========================================
+
+async function loadUsername() {
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (!user) {
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "username, username_frame"
+            )
+            .eq("id", user.id)
+            .single();
+
+    if (error) {
+
+        console.error(
+            "B艂膮d pobierania profilu:",
+            error
+        );
+
+        return;
+    }
+
+    const usernameLink =
+        document.getElementById(
+            "username-link"
+        );
+
+    usernameLink.textContent =
+        "馃懁 " + data.username;
+
+    frameClasses.forEach(
+        function(frameClass) {
+
+            usernameLink.classList.remove(
+                frameClass
+            );
+
+        }
+    );
+
+    const selectedFrame =
+        data.username_frame ||
+        "frame-none";
+
+    usernameLink.classList.add(
+        selectedFrame
+    );
+}
+
+
+// ==========================================
+// ULUBIONE PRODUKTY
+// ==========================================
+
+let currentUser = null;
+let favoriteProductIds = new Set();
+
+
+// Pobieranie aktualnego u偶ytkownika
+
+async function loadCurrentUser() {
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (!user) {
+        return null;
+    }
+
+    currentUser = user;
+
+    return user;
+}
+
+
+// Pobieranie ulubionych produkt贸w
+
+async function loadFavorites() {
+
+    if (!currentUser) {
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient
+            .from("favorites")
+            .select("product_id")
+            .eq("user_id", currentUser.id);
+
+    if (error) {
+
+        console.error(
+            "B艂膮d pobierania ulubionych:",
+            error
+        );
+
+        return;
+    }
+
+    favoriteProductIds = new Set(
+        data.map(function(item) {
+            return item.product_id;
+        })
+    );
+}
+
+
+// Dodawanie / usuwanie z ulubionych
+
+async function toggleFavorite(
+    productId,
+    button
+) {
+
+    if (!currentUser) {
+        return;
+    }
+
+    const isFavorite =
+        favoriteProductIds.has(productId);
+
+
+    // USUWANIE
+
+    if (isFavorite) {
+
+        const { error } =
+            await supabaseClient
+                .from("favorites")
+                .delete()
+                .eq("user_id", currentUser.id)
+                .eq("product_id", productId);
+
+        if (error) {
+
+            console.error(
+                "B艂膮d usuwania z ulubionych:",
+                error
+            );
+
+            return;
+        }
+
+        favoriteProductIds.delete(productId);
+
+        button.textContent = "馃";
+
+        return;
+    }
+
+
+    // DODAWANIE
+
+    const { error } =
+        await supabaseClient
+            .from("favorites")
+            .insert({
+                user_id: currentUser.id,
+                product_id: productId
+            });
+
+    if (error) {
+
+        console.error(
+            "B艂膮d dodawania do ulubionych:",
+            error
+        );
+
+        return;
+    }
+
+    favoriteProductIds.add(productId);
+
+    button.textContent = "鉂わ笍";
+}
+
+
+// ==========================================
+// PRODUKTY
+// ==========================================
+
+async function loadProducts() {
+
+    const container =
+        document.getElementById(
+            "products-container"
+        );
+
+    const { data, error } =
+        await supabaseClient
+            .from("products")
+            .select("*")
+            .order("name");
+
+    if (error) {
+
+        console.error(
+            "B??d pobierania produktów:",
+            error
+        );
+
+        container.innerHTML =
+            "<p>Nie uda?o si? za?adowa? produktów.</p>";
+
+        return;
+    }
+
+    container.innerHTML = "";
+
+    data.forEach(
+        function(product) {
+
+            const productElement =
+                document.createElement(
+                    "div"
+                );
+
+            productElement.className =
+                "product";
+
+            const isFavorite =
+                favoriteProductIds.has(
+                    product.id
+                );
+
+
+            // ==========================================
+            // CENA PRODUKTU
+            // ==========================================
+
+            const heart = "&#x1F495;";
+
+            let priceHTML = `
+
+                <p class="price">
+                    ${product.price} ${heart}
+                </p>
+
+            `;
+
+
+            // ==========================================
+            // JE?LI PRODUKT JEST NA PROMOCJI
+            // ==========================================
+
+            if (
+                (product.is_sale === true ||
+                 product.is_sale === "true") &&
+                product.sale_price !== null &&
+                product.sale_price !== undefined &&
+                product.sale_price !== ""
+            ) {
+
+                priceHTML = `
+
+                    <p class="price">
+
+                        <del>
+                            ${product.price} ${heart}
+                        </del>
+
+                        <strong>
+                            ${product.sale_price} ${heart}
+                        </strong>
+
+                    </p>
+
+                `;
+
+            }
+
+
+            productElement.innerHTML = `
+
+                <button
+                    class="favorite-button"
+                    type="button"
+                    title="Dodaj do ulubionych"
+                >
+                    ${isFavorite
+                        ? "&#x2764;&#xFE0F;"
+                        : "&#x1F90D;"
+                    }
+                </button>
+
+                <a href="produkt.html?id=${product.id}">
+
+                    <img
+                        src="${product.image_url}"
+                        alt="${product.name}"
+                    >
+
+                    <h3>
+                        ${product.name}
+                    </h3>
+
+                </a>
+
+                <p class="description">
+                    ${product.description}
+                </p>
+
+                ${priceHTML}
+
+            `;
+
+
+            const favoriteButton =
+                productElement.querySelector(
+                    ".favorite-button"
+                );
+
+            favoriteButton.addEventListener(
+                "click",
+                function() {
+
+                    toggleFavorite(
+                        product.id,
+                        favoriteButton
+                    );
+
+                }
+            );
+
+            container.appendChild(
+                productElement
+            );
+
+        }
+    );
+}
+
+
+// ==========================================
+// MI?OSTKI
+// ==========================================
+
+async function loadMilostki() {
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (!user) {
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient
+            .from("profiles")
+            .select("milostki")
+            .eq("id", user.id)
+            .single();
+
+    if (error) {
+
+        console.error(
+            "B??d pobierania Mi?ostek:",
+            error
+        );
+
+        return;
+    }
+
+    document.getElementById(
+        "milostki-amount"
+    ).textContent =
+        data.milostki;
+}
+
+
+// ==========================================
+// BONUS POWITALNY - SPRAWDZENIE
+// ==========================================
+
+async function checkWelcomeBonus() {
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (!user) {
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient
+            .from("profiles")
+            .select("welcome_bonus_claimed")
+            .eq("id", user.id)
+            .single();
+
+    if (error) {
+
+        console.error(
+            "B??d sprawdzania bonusu:",
+            error
+        );
+
+        return;
+    }
+
+    const welcomeBonus =
+        document.getElementById(
+            "welcome-bonus"
+        );
+
+    if (!welcomeBonus) {
+        return;
+    }
+
+    if (data.welcome_bonus_claimed) {
+
+        welcomeBonus.style.display =
+            "none";
+
+    }
+}
+
+
+// ==========================================
+// START
+// ==========================================
+
+async function startPage() {
+
+    await loadCurrentUser();
+
+    await loadFavorites();
+
+    await loadMilostki();
+
+    await loadProducts();
+
+    await checkLogin();
+
+    await checkWelcomeBonus();
+
+}
+
+startPage();
+
+</script>
+
+
+<!-- NEWSLETTER -->
+
+<section id="newsletter">
+
+    <h2>馃拰 Zapisz si臋 do newslettera</h2>
+
+    <p>
+        Zapisz si臋, 偶eby otrzymywa膰 od czasu do czasu
+        s艂odkie wiadomo艣ci i kody rabatowe 馃挄
+    </p>
+
+    <input
+        type="email"
+        id="newsletter-email"
+        placeholder="Tw贸j adres e-mail"
+    >
+
+    <button id="newsletter-button">
+        馃拰 Zapisuj臋 si臋
+    </button>
+
+    <p id="newsletter-message"></p>
+
+</section>
+
+
+<!-- BONUS POWITALNY -->
+
+<div id="welcome-bonus" class="welcome-bonus">
+
+    <div class="welcome-bonus-box">
+
+        <button
+            id="close-welcome-bonus"
+            class="close-welcome-bonus"
+            type="button"
+        >
+            &times;
+        </button>
+
+        <h2>
+            &#127881; Odbierz swój bonus powitalny
+        </h2>
+
+        <video
+            id="welcome-bonus-video"
+            controls
+            width="100%"
+        >
+            <source
+                src="bonus-powitalny.mp4"
+                type="video/mp4"
+            >
+
+            Twoja przegl?darka nie obs?uguje
+            odtwarzania filmu.
+
+        </video>
+
+        <p>
+            Na dobry pocz?tek czeka na Ciebie
+            <strong>
+                100 Mi?ostek &#128155;
+            </strong>
+        </p>
+
+        <button
+            id="claim-welcome-bonus"
+            type="button"
+        >
+            Odbierz bonus &#128155;
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+// ==========================================
+// BONUS POWITALNY - PRZYCISKI
+// ==========================================
+
+const closeWelcomeBonus =
+    document.getElementById(
+        "close-welcome-bonus"
+    );
+
+const welcomeBonus =
+    document.getElementById(
+        "welcome-bonus"
+    );
+
+
+// ==========================================
+// KRZY?YK
+// ==========================================
+
+if (
+    closeWelcomeBonus &&
+    welcomeBonus
+) {
+
+    closeWelcomeBonus.addEventListener(
+        "click",
+        function() {
+
+            welcomeBonus.style.display =
+                "none";
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// ODBIERANIE BONUSU
+// ==========================================
+
+const claimWelcomeBonus =
+    document.getElementById(
+        "claim-welcome-bonus"
+    );
+
+if (
+    claimWelcomeBonus &&
+    welcomeBonus
+) {
+
+    claimWelcomeBonus.addEventListener(
+        "click",
+        async function() {
+
+            claimWelcomeBonus.disabled =
+                true;
+
+
+            const { data, error } =
+                await supabaseClient.rpc(
+                    "claim_welcome_bonus"
+                );
+
+
+            if (error) {
+
+                console.error(
+                    "B??d odbierania bonusu:",
+                    error
+                );
+
+                claimWelcomeBonus.disabled =
+                    false;
+
+                return;
+
+            }
+
+
+            welcomeBonus.style.display =
+                "none";
+
+
+            await loadMilostki();
+
+        }
+    );
+
+}
+
+</script>
+
+
+// ==========================================
+// NEWSLETTER
+// ==========================================
+
+const newsletterButton =
+    document.getElementById(
+        "newsletter-button"
+    );
+
+const newsletterEmail =
+    document.getElementById(
+        "newsletter-email"
+    );
+
+const newsletterMessage =
+    document.getElementById(
+        "newsletter-message"
+    );
+
+
+if (
+    newsletterButton &&
+    newsletterEmail &&
+    newsletterMessage
+) {
+
+    newsletterButton.addEventListener(
+        "click",
+        async function() {
+
+            const email =
+                newsletterEmail.value.trim();
+
+
+            if (!email) {
+
+                newsletterMessage.textContent =
+                    "Wpisz sw贸j adres e-mail 馃拰";
+
+                return;
+            }
+
+
+            const { error } =
+                await supabaseClient
+                    .from(
+                        "newsletter_subscribers"
+                    )
+                    .insert({
+                        email: email
+                    });
+
+
+            if (error) {
+
+                console.error(
+                    "B艂膮d zapisu do newslettera:",
+                    error
+                );
+
+
+                if (error.code === "23505") {
+
+                    newsletterMessage.textContent =
+                        "Ten adres jest ju偶 zapisany 馃挄";
+
+                } else {
+
+                    newsletterMessage.textContent =
+                        "Ups! Co艣 posz艂o nie tak 馃槶";
+
+                }
+
+                return;
+            }
+
+
+            newsletterMessage.textContent =
+                "Gotowe! Jeste艣 zapisana do newslettera 馃拰馃挄";
+
+            newsletterEmail.value = "";
+
+        }
+    );
+
+}
+
+</script>
+
+
+</body>
+</html>

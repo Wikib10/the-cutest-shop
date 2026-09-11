@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ulubione ❤️</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+<h1>Ulubione ❤️</h1>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="nowosci.html">Nowości</a>
+    <a href="promocje.html">Promocje</a>
+    <a href="misje.html">Misje</a>
+    <a href="osiagniecia.html">Osiągnięcia</a>
+    <a href="zamowienia.html">Zamówienia</a>
+    <a href="koszyk.html">Koszyk🛒</a>
+    <a href="ulubione.html">Ulubione❤️</a>
+
+    <a href="profil.html"
+       id="username-link"
+       class="username-link frame-none">
+        👤 Ładowanie...
+    </a>
+</nav>
+
+<div id="milostki-display">
+    💕 Miłostki:
+    <span id="milostki-amount">0</span>
+</div>
+
+<h2>Twoje ulubione produkty 💕</h2>
+
+<div class="products favorites-products" id="favorites-container">
+    <p>Ładowanie ulubionych...</p>
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+    "https://peohsktyolhtjdzwjrrk.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_HeAIYFUT37HmOQkZSUr8iw_x_ej8pXN";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+// ==========================================
+// RAMKA NICKU
+// ==========================================
+
+const frameClasses = [
+    "frame-none",
+    "frame-pink",
+    "frame-purple",
+    "frame-blue",
+    "frame-mint",
+    "frame-yellow",
+    "frame-white",
+    "frame-black",
+    "frame-gray",
+    "frame-crystal",
+    "frame-royal",
+    "frame-gold",
+    "frame-vip"
+];
+
+
+// ==========================================
+// SPRAWDZENIE LOGOWANIA
+// ==========================================
+
+async function checkLogin() {
+
+    const { data, error } =
+        await supabaseClient.auth.getSession();
+
+    if (error || !data.session) {
+
+        window.location.href =
+            "logowanie.html";
+
+        return false;
+    }
+
+    return true;
+}
+
+
+// ==========================================
+// NICK + RAMKA
+// ==========================================
+
+async function loadUsername() {
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (!user) {
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient
+            .from("profiles")
+            .select("username, username_frame")
+            .eq("id", user.id)
+            .single();
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania profilu:",
+            error
+        );
+
+        return;
+    }
+
+    const usernameLink =
+        document.getElementById(
+            "username-link"
+        );
+
+    usernameLink.textContent =
+        "👤 " + data.username;
+
+
+    frameClasses.forEach(
+        function(frameClass) {
+
+            usernameLink.classList.remove(
+                frameClass
+            );
+
+        }
+    );
+
+
+    usernameLink.classList.add(
+        data.username_frame ||
+        "frame-none"
+    );
+}
+
+
+// ==========================================
+// MIŁOSTKI
+// ==========================================
+
+async function loadMilostki() {
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (!user) {
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient
+            .from("profiles")
+            .select("milostki")
+            .eq("id", user.id)
+            .single();
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania Miłostek:",
+            error
+        );
+
+        return;
+    }
+
+    document.getElementById(
+        "milostki-amount"
+    ).textContent =
+        data.milostki;
+}
+
+
+// ==========================================
+// ULUBIONE
+// ==========================================
+
+async function loadFavorites() {
+
+    const container =
+        document.getElementById(
+            "favorites-container"
+        );
+
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+
+    if (!user) {
+        return;
+    }
+
+
+    // Pobieramy zapisane produkty
+
+    const { data: favorites, error } =
+        await supabaseClient
+            .from("favorites")
+            .select("product_id")
+            .eq("user_id", user.id);
+
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania ulubionych:",
+            error
+        );
+
+        container.innerHTML =
+            "<p>Nie udało się załadować ulubionych produktów.</p>";
+
+        return;
+    }
+
+
+    // Brak ulubionych
+
+    if (!favorites || favorites.length === 0) {
+
+        container.innerHTML = `
+            <p>
+                Nie masz jeszcze żadnych ulubionych produktów. 🤍
+            </p>
+        `;
+
+        return;
+    }
+
+
+    // Lista ID produktów
+
+    const productIds =
+        favorites.map(
+            function(item) {
+                return item.product_id;
+            }
+        );
+
+
+    // Pobieramy produkty
+
+    const { data: products, error: productsError } =
+        await supabaseClient
+            .from("products")
+            .select("*")
+            .in("id", productIds)
+            .order("name");
+
+
+    if (productsError) {
+
+        console.error(
+            "Błąd pobierania produktów:",
+            productsError
+        );
+
+        container.innerHTML =
+            "<p>Nie udało się załadować produktów.</p>";
+
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    products.forEach(
+        function(product) {
+
+            const productElement =
+                document.createElement(
+                    "div"
+                );
+
+            productElement.className =
+                "product";
+
+
+            productElement.innerHTML = `
+
+    <button
+        class="favorite-button"
+        type="button"
+        title="Usuń z ulubionych"
+    >
+        ❤️
+    </button>
+
+    <a href="produkt.html?id=${product.id}">
+
+        <img
+            src="${product.image_url}"
+            alt="${product.name}"
+        >
+
+        <h3>
+            ${product.name}
+        </h3>
+
+    </a>
+
+    <p class="description">
+        ${product.description}
+    </p>
+
+    <p class="price">
+        ${product.price} 💗
+    </p>
+
+`;
+
+const favoriteButton =
+    productElement.querySelector(
+        ".favorite-button"
+    );
+
+favoriteButton.addEventListener(
+    "click",
+    async function() {
+
+        const { error } =
+            await supabaseClient
+                .from("favorites")
+                .delete()
+                .eq("user_id", user.id)
+                .eq("product_id", product.id);
+
+        if (error) {
+
+            console.error(
+                "Błąd usuwania z ulubionych:",
+                error
+            );
+
+            return;
+        }
+
+        productElement.remove();
+
+    }
+);
+
+            container.appendChild(
+                productElement
+            );
+
+        }
+    );
+}
+
+
+// ==========================================
+// START
+// ==========================================
+
+async function startPage() {
+
+    const loggedIn =
+        await checkLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
+    await loadUsername();
+
+    await loadMilostki();
+
+    await loadFavorites();
+}
+
+
+startPage();
+
+</script>
+
+</body>
+</html>

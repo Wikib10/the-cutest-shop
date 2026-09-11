@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Nowości - The Cutest Shop</title>
+
+<link rel="stylesheet"
+      href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<nav>
+
+    <a href="index.html">
+        Home
+    </a>
+
+    <a href="nowosci.html">
+        Nowości
+    </a>
+
+    <a href="promocje.html">
+        Promocje
+    </a>
+
+    <a href="misje.html">
+        Misje
+    </a>
+
+    <a href="osiagniecia.html">
+        Osiągnięcia
+    </a>
+
+    <a href="zamowienia.html">
+        Zamówienia
+    </a>
+
+    <a href="koszyk.html">
+        Koszyk 🛒
+    </a>
+
+</nav>
+
+
+<h1>
+    Nowości ✨
+</h1>
+
+
+<div class="welcome">
+
+    <h2>
+        Co nowego, Misiu? 💕
+    </h2>
+
+    <p>
+        Tu znajdziesz najnowsze rzeczy
+        w The Cutest Shop!
+    </p>
+
+</div>
+
+
+<h2>
+    Najnowsze produkty ✨
+</h2>
+
+
+<div
+    class="products"
+    id="new-products"
+>
+
+    <p>
+        Ładowanie nowości... 💕
+    </p>
+
+</div>
+
+
+
+<script>
+
+
+// ==========================================
+// SUPABASE
+// ==========================================
+
+const SUPABASE_URL =
+    "https://peohsktyolhtjdzwjrrk.supabase.co";
+
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_HeAIYFUT37HmOQkZSUr8iw_x_ej8pXN";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+
+// ==========================================
+// ŁADOWANIE NOWOŚCI
+// ==========================================
+
+async function loadNewProducts() {
+
+    const container =
+        document.getElementById(
+            "new-products"
+        );
+
+
+    const {
+        data: products,
+        error
+    } =
+        await supabaseClient
+            .from("products")
+            .select("*")
+            .eq("is_new", true);
+
+
+    // ======================================
+    // BŁĄD
+    // ======================================
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania nowości:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div class="welcome">
+
+                <h3>
+                    😢 Ups!
+                </h3>
+
+                <p>
+                    Nie udało się załadować
+                    nowości.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+
+    // ======================================
+    // BRAK NOWOŚCI
+    // ======================================
+
+    if (!products || products.length === 0) {
+
+        container.innerHTML = `
+
+            <div class="welcome">
+
+                <h3>
+                    💕 Chwilowo brak nowości
+                </h3>
+
+                <p>
+                    Ale spokojnie...
+                    niedługo może pojawić się
+                    coś nowego! ✨
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+
+    // ======================================
+    // CZYŚCIMY KONTENER
+    // ======================================
+
+    container.innerHTML = "";
+
+
+
+    // ======================================
+    // PRODUKTY
+    // ======================================
+
+    products.forEach(function(product) {
+
+
+        const element =
+            document.createElement("div");
+
+
+        element.className =
+            "product";
+
+
+        // ==================================
+        // CENA
+        // ==================================
+
+        let priceHTML = `
+            <p class="price">
+                ${product.price}💕
+            </p>
+        `;
+
+
+        // ==================================
+        // JEŚLI PRODUKT JEST NA PROMOCJI
+        // ==================================
+
+        if (
+            product.is_sale &&
+            product.sale_price !== null
+        ) {
+
+            priceHTML = `
+
+                <p class="price">
+
+                    <span
+                        style="
+                            text-decoration: line-through;
+                            opacity: 0.6;
+                            margin-right: 6px;
+                        "
+                    >
+                        ${product.price}💕
+                    </span>
+
+                    <strong>
+                        ${product.sale_price}💕
+                    </strong>
+
+                </p>
+
+            `;
+
+        }
+
+
+
+        // ==================================
+        // KARTA PRODUKTU
+        // ==================================
+
+        element.innerHTML = `
+
+            <a
+                href="produkt.html?id=${product.id}"
+            >
+
+                <div
+                    style="
+                        position: relative;
+                    "
+                >
+
+                    <img
+                        src="${product.image_url || ""}"
+                        alt="${product.name}"
+                    >
+
+                    <span
+                        style="
+                            position: absolute;
+                            top: 10px;
+                            left: 10px;
+                            background: #ffd6e8;
+                            padding: 6px 10px;
+                            border-radius: 20px;
+                            font-weight: bold;
+                        "
+                    >
+                        ✨ Nowość
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    ${product.name}
+                </h3>
+
+            </a>
+
+
+            <p class="description">
+                ${product.description || ""}
+            </p>
+
+
+            ${priceHTML}
+
+        `;
+
+
+        container.appendChild(
+            element
+        );
+
+    });
+
+}
+
+
+
+// ==========================================
+// START
+// ==========================================
+
+loadNewProducts();
+
+
+</script>
+
+
+</body>
+
+</html>
