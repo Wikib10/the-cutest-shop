@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>The Cutest Shop</title>
 
@@ -29,9 +30,9 @@
 
 <a href="zamowienia.html">Zamówienia</a>
 
-<a href="koszyk.html">Koszyk🛒</a>
+<a href="ulubione.html">Ulubione ❤️</a>
 
-<a href="ulubione.html">Ulubione❤️</a>
+<a href="koszyk.html">Koszyk 🛒</a>
 
 <a
     href="profil.html"
@@ -185,8 +186,13 @@ async function loadUsername() {
         );
 
 
+    if (!usernameLink) {
+        return;
+    }
+
+
     usernameLink.textContent =
-        "👤 " + data.username;
+        "\u{1F464} " + data.username;
 
 
     frameClasses.forEach(
@@ -406,11 +412,10 @@ async function loadProduct() {
         data.name;
 
 
+
     // ==========================================
     // CENA DO KOSZYKA
     // ==========================================
-
-    // Cena faktycznie płacona
 
     button.dataset.price =
         hasSalePrice
@@ -422,6 +427,7 @@ async function loadProduct() {
 
     button.dataset.originalPrice =
         data.price;
+
 
 
     // ==========================================

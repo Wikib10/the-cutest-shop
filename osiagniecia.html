@@ -2,106 +2,166 @@
 <html lang="pl">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Osiągnięcia - The Cutest Shop</title>
+    <meta charset="UTF-8">
 
-<link rel="stylesheet" href="style.css">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Osiągnięcia - The Cutest Shop</title>
 
-<style>
+    <link rel="stylesheet"
+          href="style.css">
 
-/* ==========================================
-   KOLEKCJA ODZNAK
-========================================== */
-
-.badge-collection {
-    width: 92%;
-    max-width: 1000px;
-    margin: 20px auto 35px auto;
-    padding: 14px 24px;
-
-    background: #fff5fa;
-    border: 1px solid #f0d5e4;
-    border-radius: 15px;
-
-    box-sizing: border-box;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.badge-collection-text {
-    text-align: left;
-}
-
-.badge-collection h3 {
-    margin: 0 0 3px 0;
-    font-size: 20px;
-}
-
-.badge-collection p {
-    margin: 0;
-    font-size: 14px;
-}
-
-.badge-count {
-    font-size: 26px !important;
-    font-weight: bold;
-    white-space: nowrap;
-}
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-/* ==========================================
-   ODZNAKI
-========================================== */
+    <style>
 
-.badge-card {
-    text-align: center;
-}
+        /* ==========================================
+           KOLEKCJA ODZNAK
+        ========================================== */
 
-.badge-icon {
-    font-size: 45px;
-    margin-bottom: 8px;
-}
+        .badge-collection {
+            width: 92%;
+            max-width: 1000px;
+            margin: 20px auto 35px auto;
+            padding: 14px 24px;
 
-.badge-locked {
-    opacity: 0.55;
-    filter: grayscale(1);
-}
+            background: #fff5fa;
+            border: 1px solid #f0d5e4;
+            border-radius: 15px;
 
-.badge-status {
-    margin-top: 10px;
-    font-weight: bold;
-}
+            box-sizing: border-box;
 
-</style>
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+
+        .badge-collection-text {
+            text-align: left;
+        }
+
+
+        .badge-collection h3 {
+            margin: 0 0 3px 0;
+            font-size: 20px;
+        }
+
+
+        .badge-collection p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+
+        .badge-count {
+            font-size: 26px !important;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+
+        /* ==========================================
+           ODZNAKI
+        ========================================== */
+
+        .badge-card {
+            text-align: center;
+        }
+
+
+        .badge-icon {
+            font-size: 45px;
+            margin-bottom: 8px;
+        }
+
+
+        .badge-locked {
+            opacity: 0.55;
+            filter: grayscale(1);
+        }
+
+
+        .badge-status {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+    </style>
 
 </head>
 
+
 <body>
 
+
+<!-- =========================
+     MENU
+========================= -->
+
 <nav>
-    <a href="index.html">Home</a>
-    <a href="nowosci.html">Nowości</a>
-    <a href="promocje.html">Promocje</a>
-    <a href="misje.html">Misje</a>
-    <a href="osiagniecia.html">Osiągnięcia</a>
-    <a href="zamowienia.html">Zamówienia</a>
-    <a href="koszyk.html">Koszyk 🛒</a>
+
+    <a href="index.html">
+        Home
+    </a>
+
+    <a href="nowosci.html">
+        Nowości
+    </a>
+
+    <a href="promocje.html">
+        Promocje
+    </a>
+
+    <a href="misje.html">
+        Misje
+    </a>
+
+    <a href="osiagniecia.html">
+        Osiągnięcia
+    </a>
+
+    <a href="zamowienia.html">
+        Zamówienia
+    </a>
+
+    <a href="ulubione.html">
+        Ulubione ❤️
+    </a>
+
+    <a href="koszyk.html">
+        Koszyk 🛒
+    </a>
+
+    <a
+        href="profil.html"
+        id="username-link"
+        class="username-link frame-none"
+    >
+        👤 Ładowanie...
+    </a>
+
 </nav>
 
 
-<h1>Osiągnięcia 🏆</h1>
+<!-- =========================
+     NAGŁÓWEK
+========================= -->
+
+<h1>
+    Osiągnięcia 🏆
+</h1>
 
 
 <div class="welcome">
 
-    <h2>Twoja kolekcja odznak! 💕</h2>
+    <h2>
+        Twoja kolekcja odznak! 💕
+    </h2>
 
     <p>
         Zbieraj odznaki i zostań legendą sklepu! ✨
@@ -110,17 +170,22 @@
 </div>
 
 
-<!-- ==========================================
+<!-- =========================
      KOLEKCJA
-========================================== -->
+========================= -->
 
 <div id="badge-collection-container"></div>
 
 
-<h2>🏆 Twoje odznaki</h2>
+<h2>
+    🏆 Twoje odznaki
+</h2>
 
 
-<div class="achievements" id="achievements-container">
+<div
+    class="achievements"
+    id="achievements-container"
+>
 
     <p>
         Ładowanie odznak... 💕
@@ -131,6 +196,10 @@
 
 <script>
 
+
+// ==========================================
+// SUPABASE
+// ==========================================
 
 const SUPABASE_URL =
     "https://peohsktyolhtjdzwjrrk.supabase.co";
@@ -145,6 +214,129 @@ const supabaseClient =
         SUPABASE_URL,
         SUPABASE_PUBLISHABLE_KEY
     );
+
+
+
+// ==========================================
+// RAMKI NICKU
+// ==========================================
+
+const frameClasses = [
+    "frame-none",
+    "frame-pink",
+    "frame-purple",
+    "frame-blue",
+    "frame-mint",
+    "frame-yellow",
+    "frame-white",
+    "frame-black",
+    "frame-gray",
+    "frame-crystal",
+    "frame-royal",
+    "frame-gold",
+    "frame-vip"
+];
+
+
+
+// ==========================================
+// POBIERANIE NICKU
+// ==========================================
+
+async function loadUsername() {
+
+    const {
+        data: { user }
+    } =
+        await supabaseClient.auth.getUser();
+
+
+    if (!user) {
+        return;
+    }
+
+
+    const { data, error } =
+        await supabaseClient
+            .from("profiles")
+            .select("username, username_frame")
+            .eq("id", user.id)
+            .single();
+
+
+    if (error) {
+
+        console.error(
+            "Blad pobierania profilu:",
+            error
+        );
+
+        return;
+    }
+
+
+    const usernameLink =
+        document.getElementById(
+            "username-link"
+        );
+
+
+    if (!usernameLink) {
+        return;
+    }
+
+
+    usernameLink.textContent =
+        "\u{1F464} " + data.username;
+
+
+    frameClasses.forEach(
+        function(frameClass) {
+
+            usernameLink.classList.remove(
+                frameClass
+            );
+
+        }
+    );
+
+
+    const selectedFrame =
+        data.username_frame ||
+        "frame-none";
+
+
+    usernameLink.classList.add(
+        selectedFrame
+    );
+}
+
+
+
+// ==========================================
+// LOGOWANIE
+// ==========================================
+
+async function checkLogin() {
+
+    const { data, error } =
+        await supabaseClient.auth.getSession();
+
+
+    if (error || !data.session) {
+
+        window.location.href =
+            "logowanie.html";
+
+        return false;
+    }
+
+
+    await loadUsername();
+
+    return true;
+}
+
 
 
 // ==========================================
@@ -347,9 +539,11 @@ async function loadBadges() {
     badgesWithStatus.sort(function(a, b) {
 
         // Zdobyte odznaki zawsze na początku
+
         if (a.unlocked && !b.unlocked) {
             return -1;
         }
+
 
         if (!a.unlocked && b.unlocked) {
             return 1;
@@ -358,6 +552,7 @@ async function loadBadges() {
 
         // Jeżeli obie są zdobyte:
         // najnowsza zdobyta jest pierwsza
+
         if (a.unlocked && b.unlocked) {
 
             return new Date(b.unlockedAt) -
@@ -367,6 +562,7 @@ async function loadBadges() {
 
 
         // Niezdobyte zostają alfabetycznie
+
         return a.badge.name.localeCompare(
             b.badge.name,
             "pl"
@@ -475,13 +671,32 @@ async function loadBadges() {
 }
 
 
+
 // ==========================================
 // START
 // ==========================================
 
-loadBadges();
+async function startPage() {
+
+    const loggedIn =
+        await checkLogin();
+
+
+    if (!loggedIn) {
+        return;
+    }
+
+
+    await loadBadges();
+
+}
+
+
+startPage();
+
 
 </script>
+
 
 </body>
 

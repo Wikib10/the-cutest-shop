@@ -19,10 +19,522 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
+    <style>
+
+        /* ==========================================
+           PANEL ADMINISTRATORA
+           ========================================== */
+
+        body.admin-page {
+            background:
+                linear-gradient(
+                    135deg,
+                    #fff5fa 0%,
+                    #fdf8ff 50%,
+                    #fff7fb 100%
+                );
+        }
+
+
+        body.admin-page > h1 {
+            text-align: center;
+            margin: 35px 15px 10px;
+            color: #4b3442;
+        }
+
+
+        #admin-message {
+            text-align: center;
+            margin: 0 auto 25px;
+            font-weight: 600;
+        }
+
+
+        #admin-panel {
+            width: min(1100px, calc(100% - 30px));
+            margin: 0 auto 50px;
+        }
+
+
+        /* ==========================================
+           SEKCJE
+           ========================================== */
+
+        #admin-panel > section {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #f2dce8;
+            border-radius: 28px;
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(130, 80, 110, 0.08);
+        }
+
+
+        #admin-panel > section > h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #4b3442;
+        }
+
+
+        #admin-panel > section > p {
+            color: #765d6b;
+            margin-top: 0;
+        }
+
+
+        #admin-panel h3 {
+            color: #553d4b;
+        }
+
+
+        /* ==========================================
+           FORMULARZE
+           ========================================== */
+
+        #admin-panel input[type="text"],
+        #admin-panel input[type="number"],
+        #admin-panel textarea,
+        #admin-panel select {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            padding: 12px 14px;
+            border: 1px solid #e6cdd9;
+            border-radius: 14px;
+            background: #fffafd;
+            color: #4b3442;
+            font-family: inherit;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+
+        #admin-panel textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+
+        #admin-panel input:focus,
+        #admin-panel textarea:focus,
+        #admin-panel select:focus {
+            border-color: #d99ab9;
+            box-shadow: 0 0 0 3px rgba(217, 154, 185, 0.12);
+        }
+
+
+        #admin-panel label {
+            display: block;
+            color: #5c4552;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+
+        #admin-panel input[type="checkbox"] {
+            width: auto;
+            margin-right: 6px;
+            accent-color: #d88daf;
+        }
+
+
+        /* ==========================================
+           PRZYCISKI
+           ========================================== */
+
+        #admin-panel button {
+            border: none;
+            border-radius: 14px;
+            padding: 11px 16px;
+            margin: 5px 5px 5px 0;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #f8d7e7;
+            color: #553746;
+            transition:
+                transform 0.15s,
+                box-shadow 0.15s,
+                background 0.15s;
+        }
+
+
+        #admin-panel button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(120, 70, 100, 0.12);
+            background: #f4c8dc;
+        }
+
+
+        #admin-panel button:active {
+            transform: translateY(0);
+        }
+
+
+        #admin-panel button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+
+        /* główne przyciski dodawania */
+
+        #add-product-button,
+        #add-mission-button,
+        #add-badge-button {
+            background: #f3c4da;
+            font-size: 15px;
+            padding: 12px 18px;
+        }
+
+
+        #add-product-button:hover,
+        #add-mission-button:hover,
+        #add-badge-button:hover {
+            background: #ecb4d0;
+        }
+
+
+        /* ==========================================
+           FORMULARZE DODAWANIA / EDYCJI
+           ========================================== */
+
+        #add-product-form,
+        #edit-product-form,
+        #add-mission-form,
+        #edit-mission-form,
+        #add-badge-form,
+        #edit-badge-form {
+            margin-top: 20px;
+            padding: 22px;
+            border-radius: 22px;
+            background: #fff7fb;
+            border: 1px solid #efd6e2;
+        }
+
+
+        #add-product-form h3,
+        #edit-product-form h3,
+        #add-mission-form h3,
+        #edit-mission-form h3,
+        #add-badge-form h3,
+        #edit-badge-form h3 {
+            margin-top: 0;
+        }
+
+
+        /* ==========================================
+           KARTY PRODUKTÓW
+           ========================================== */
+
+        #products-admin {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+
+        .admin-product {
+            padding: 20px;
+            border-radius: 22px;
+            background: #fffafd;
+            border: 1px solid #efdbe5;
+            box-shadow: 0 4px 14px rgba(130, 80, 110, 0.05);
+        }
+
+
+        .admin-product h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+
+        .admin-product p {
+            color: #705a66;
+        }
+
+
+        .admin-product .edit-product {
+            background: #e9ddff;
+            color: #57406b;
+        }
+
+
+        .admin-product .delete-product {
+            background: #ffe0e5;
+            color: #814653;
+        }
+
+
+        /* ==========================================
+           KARTY MISJI
+           ========================================== */
+
+        #missions-admin-list,
+        #admin-missions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+
+        .admin-mission-definition,
+        .admin-mission {
+            padding: 20px;
+            border-radius: 22px;
+            background: #fffafd;
+            border: 1px solid #efdbe5;
+            box-shadow: 0 4px 14px rgba(130, 80, 110, 0.05);
+        }
+
+
+        .admin-mission-definition h3,
+        .admin-mission h3 {
+            margin-top: 0;
+        }
+
+
+        .admin-mission-definition p,
+        .admin-mission p {
+            color: #705a66;
+        }
+
+
+        .toggle-mission {
+            background: #dff4e7 !important;
+            color: #3d664a !important;
+        }
+
+
+        .delete-mission {
+            background: #ffe0e5 !important;
+            color: #814653 !important;
+        }
+
+
+        .approve-mission {
+            background: #dff4e7 !important;
+            color: #3d664a !important;
+        }
+
+
+        .reject-mission {
+            background: #ffe0e5 !important;
+            color: #814653 !important;
+        }
+
+
+        /* ==========================================
+           KARTY ODZNAK
+           ========================================== */
+
+        #badges-admin-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+
+        .admin-badge-definition {
+            padding: 20px;
+            border-radius: 22px;
+            background:
+                linear-gradient(
+                    145deg,
+                    #fffafd,
+                    #fff7fb
+                );
+            border: 1px solid #efdbe5;
+            box-shadow: 0 4px 14px rgba(130, 80, 110, 0.05);
+        }
+
+
+        .admin-badge-definition h3 {
+            margin-top: 0;
+            font-size: 19px;
+        }
+
+
+        .admin-badge-definition p {
+            color: #705a66;
+        }
+
+
+        .toggle-badge {
+            background: #dff4e7 !important;
+            color: #3d664a !important;
+        }
+
+
+        .delete-badge {
+            background: #ffe0e5 !important;
+            color: #814653 !important;
+        }
+
+
+        /* ==========================================
+           ZAMÓWIENIA
+           ========================================== */
+
+        #admin-orders {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+
+        .admin-order {
+            padding: 20px;
+            border-radius: 22px;
+            background: #fffafd;
+            border: 1px solid #efdbe5;
+            box-shadow: 0 4px 14px rgba(130, 80, 110, 0.05);
+        }
+
+
+        .admin-order h3 {
+            margin-top: 0;
+        }
+
+
+        .admin-order h4 {
+            margin-bottom: 8px;
+            color: #59404e;
+        }
+
+
+        .admin-order p {
+            color: #705a66;
+        }
+
+
+        .admin-order-products {
+            padding: 12px 14px;
+            border-radius: 15px;
+            background: #fff3f8;
+            margin-bottom: 12px;
+        }
+
+
+        .admin-order-products p {
+            margin: 5px 0;
+            color: #5f4955;
+        }
+
+
+        .order-status {
+            margin-top: 4px;
+        }
+
+
+        /* ==========================================
+           PUSTE / INFORMACYJNE SEKCJE
+           ========================================== */
+
+        #admin-panel > section:nth-last-child(2),
+        #admin-panel > section:last-child {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+
+        /* ==========================================
+           SEPARATOR POD NAGŁÓWKAMI
+           ========================================== */
+
+        #admin-panel > section > h3 {
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+
+
+        /* ==========================================
+           TELEFON
+           ========================================== */
+
+        @media (max-width: 700px) {
+
+            #admin-panel {
+                width: calc(100% - 20px);
+            }
+
+
+            #admin-panel > section {
+                padding: 20px;
+                border-radius: 22px;
+            }
+
+
+            body.admin-page > h1 {
+                font-size: 27px;
+                margin-top: 25px;
+            }
+
+
+            #products-admin,
+            #missions-admin-list,
+            #admin-missions,
+            #badges-admin-list,
+            #admin-orders {
+                grid-template-columns: 1fr;
+            }
+
+
+            #add-product-form,
+            #edit-product-form,
+            #add-mission-form,
+            #edit-mission-form,
+            #add-badge-form,
+            #edit-badge-form {
+                padding: 17px;
+                border-radius: 18px;
+            }
+
+
+            #admin-panel button {
+                margin-bottom: 7px;
+            }
+
+        }
+
+
+        @media (max-width: 400px) {
+
+            body.admin-page > h1 {
+                font-size: 24px;
+            }
+
+
+            #admin-panel > section {
+                padding: 16px;
+            }
+
+
+            .admin-product,
+            .admin-mission-definition,
+            .admin-mission,
+            .admin-badge-definition,
+            .admin-order {
+                padding: 16px;
+            }
+
+        }
+
+    </style>
+
 </head>
 
 
-<body>
+<body class="admin-page">
 
 
 <nav>
@@ -146,36 +658,36 @@
             id="product-image"
             placeholder="Link do zdjęcia"
         >
-		
-		<label>
-    <input
-        type="checkbox"
-        id="product-is-new"
-    >
-    ✨ Nowość
-</label>
 
-<br><br>
+        <br><br>
 
-<label>
-    <input
-        type="checkbox"
-        id="product-is-sale"
-    >
-    🔥 Promocja
-</label>
+        <label>
+            <input
+                type="checkbox"
+                id="product-is-new"
+            >
+            ✨ Nowość
+        </label>
 
-<br><br>
+        <br><br>
 
-<input
-    type="number"
-    id="product-sale-price"
-    placeholder="Cena promocyjna"
-    min="0"
-    step="0.01"
->
+        <label>
+            <input
+                type="checkbox"
+                id="product-is-sale"
+            >
+            🔥 Promocja
+        </label>
 
-<br><br>
+        <br><br>
+
+        <input
+            type="number"
+            id="product-sale-price"
+            placeholder="Cena promocyjna"
+            min="0"
+            step="0.01"
+        >
 
         <br><br>
 
@@ -237,36 +749,36 @@
             id="edit-product-image"
             placeholder="Link do zdjęcia"
         >
-		
-		<label>
-    <input
-        type="checkbox"
-        id="edit-product-is-new"
-    >
-    ✨ Nowość
-</label>
 
-<br><br>
+        <br><br>
 
-<label>
-    <input
-        type="checkbox"
-        id="edit-product-is-sale"
-    >
-    🔥 Promocja
-</label>
+        <label>
+            <input
+                type="checkbox"
+                id="edit-product-is-new"
+            >
+            ✨ Nowość
+        </label>
 
-<br><br>
+        <br><br>
 
-<input
-    type="number"
-    id="edit-product-sale-price"
-    placeholder="Cena promocyjna"
-    min="0"
-    step="0.01"
->
+        <label>
+            <input
+                type="checkbox"
+                id="edit-product-is-sale"
+            >
+            🔥 Promocja
+        </label>
 
-<br><br>
+        <br><br>
+
+        <input
+            type="number"
+            id="edit-product-sale-price"
+            placeholder="Cena promocyjna"
+            min="0"
+            step="0.01"
+        >
 
         <br><br>
 
@@ -490,116 +1002,116 @@
 
         <h3>➕ Dodaj odznakę</h3>
 
-<input
-    type="text"
-    id="badge-name"
-    placeholder="Nazwa odznaki"
->
+        <input
+            type="text"
+            id="badge-name"
+            placeholder="Nazwa odznaki"
+        >
 
-<br><br>
+        <br><br>
 
-<textarea
-    id="badge-description"
-    placeholder="Opis odznaki"
-></textarea>
+        <textarea
+            id="badge-description"
+            placeholder="Opis odznaki"
+        ></textarea>
 
-<br><br>
+        <br><br>
 
-<input
-    type="text"
-    id="badge-icon"
-    placeholder="Ikona, np. 🏆"
->
+        <input
+            type="text"
+            id="badge-icon"
+            placeholder="Ikona, np. 🏆"
+        >
 
-<br><br>
+        <br><br>
 
-<label for="badge-unlock-type">
-    🔓 Warunek zdobycia:
-</label>
+        <label for="badge-unlock-type">
+            🔓 Warunek zdobycia:
+        </label>
 
-<br><br>
+        <br><br>
 
-<select id="badge-unlock-type">
+        <select id="badge-unlock-type">
 
-    <option value="manual">
-        🔧 Ręcznie
-    </option>
+            <option value="manual">
+                🔧 Ręcznie
+            </option>
 
-    <option value="first_login">
-        🔐 Pierwsze logowanie
-    </option>
+            <option value="first_login">
+                🔐 Pierwsze logowanie
+            </option>
 
-    <option value="first_purchase">
-        🛒 Pierwszy zakup
-    </option>
+            <option value="first_purchase">
+                🛒 Pierwszy zakup
+            </option>
 
-    <option value="mission">
-        🎯 Ukończenie konkretnej misji
-    </option>
+            <option value="mission">
+                🎯 Ukończenie konkretnej misji
+            </option>
 
-    <option value="badge_count">
-        💎 Zdobycie określonej liczby odznak
-    </option>
+            <option value="badge_count">
+                💎 Zdobycie określonej liczby odznak
+            </option>
 
-    <option value="all_badges">
-        👑 Zdobycie wszystkich pozostałych odznak
-    </option>
+            <option value="all_badges">
+                👑 Zdobycie wszystkich pozostałych odznak
+            </option>
 
-</select>
+        </select>
 
-<br><br>
+        <br><br>
 
-<div
-    id="badge-count-field"
-    style="display: none;"
->
+        <div
+            id="badge-count-field"
+            style="display: none;"
+        >
 
-    <label for="badge-unlock-value">
-        💎 Liczba wymaganych odznak:
-    </label>
+            <label for="badge-unlock-value">
+                💎 Liczba wymaganych odznak:
+            </label>
 
-    <br><br>
+            <br><br>
 
-    <input
-        type="number"
-        id="badge-unlock-value"
-        min="1"
-        step="1"
-        placeholder="Np. 5"
-    >
+            <input
+                type="number"
+                id="badge-unlock-value"
+                min="1"
+                step="1"
+                placeholder="Np. 5"
+            >
 
-</div>
+        </div>
 
-<div
-    id="badge-mission-field"
-    style="display: none;"
->
+        <div
+            id="badge-mission-field"
+            style="display: none;"
+        >
 
-    <label for="badge-unlock-mission">
-        🎯 Wybierz misję:
-    </label>
+            <label for="badge-unlock-mission">
+                🎯 Wybierz misję:
+            </label>
 
-    <br><br>
+            <br><br>
 
-    <select id="badge-unlock-mission">
+            <select id="badge-unlock-mission">
 
-        <option value="">
-            -- Wybierz misję --
-        </option>
+                <option value="">
+                    -- Wybierz misję --
+                </option>
 
-    </select>
+            </select>
 
-</div>
+        </div>
 
-<br>
+        <br>
 
-<button id="save-badge-button">
-    💾 Dodaj odznakę
-</button>
+        <button id="save-badge-button">
+            💾 Dodaj odznakę
+        </button>
 
-<button id="cancel-badge-button">
-    ❌ Anuluj
-</button>
+        <button id="cancel-badge-button">
+            ❌ Anuluj
+        </button>
 
     </div>
 
@@ -639,42 +1151,80 @@
             id="edit-badge-icon"
             placeholder="Ikona, np. 🏆"
         >
-		
-		<div
-    id="edit-badge-count-field"
-    style="display: none;"
->
-    <input
-        type="number"
-        id="edit-badge-unlock-value"
-        min="1"
-        placeholder="Liczba wymaganych odznak"
-    >
-</div>
 
-<br>
+        <br><br>
 
-<div
-    id="edit-badge-mission-field"
-    style="display: none;"
->
-    <select id="edit-badge-unlock-mission">
-        <option value="">Wybierz misję</option>
-    </select>
-</div>
+        <div
+            id="edit-badge-count-field"
+            style="display: none;"
+        >
 
-<br>
-		
-		<select id="edit-badge-unlock-type">
-    <option value="manual">🔧 Ręcznie</option>
-    <option value="first_login">🔐 Pierwsze logowanie</option>
-    <option value="first_purchase">🛒 Pierwszy zakup</option>
-    <option value="mission">🎯 Ukończenie konkretnej misji</option>
-    <option value="badge_count">💎 Zdobycie określonej liczby odznak</option>
-    <option value="all_badges">👑 Zdobycie wszystkich pozostałych odznak</option>
-</select>
+            <label>
+                💎 Liczba wymaganych odznak:
+            </label>
 
-<br><br>
+            <br><br>
+
+            <input
+                type="number"
+                id="edit-badge-unlock-value"
+                min="1"
+                placeholder="Liczba wymaganych odznak"
+            >
+
+        </div>
+
+
+        <div
+            id="edit-badge-mission-field"
+            style="display: none;"
+        >
+
+            <label>
+                🎯 Wybierz misję:
+            </label>
+
+            <br><br>
+
+            <select id="edit-badge-unlock-mission">
+
+                <option value="">
+                    Wybierz misję
+                </option>
+
+            </select>
+
+        </div>
+
+        <br>
+
+        <select id="edit-badge-unlock-type">
+
+            <option value="manual">
+                🔧 Ręcznie
+            </option>
+
+            <option value="first_login">
+                🔐 Pierwsze logowanie
+            </option>
+
+            <option value="first_purchase">
+                🛒 Pierwszy zakup
+            </option>
+
+            <option value="mission">
+                🎯 Ukończenie konkretnej misji
+            </option>
+
+            <option value="badge_count">
+                💎 Zdobycie określonej liczby odznak
+            </option>
+
+            <option value="all_badges">
+                👑 Zdobycie wszystkich pozostałych odznak
+            </option>
+
+        </select>
 
         <br><br>
 
@@ -978,23 +1528,24 @@ async function loadAdminProducts() {
                             "edit-product-image"
                         ).value =
                             product.image_url || "";
-							
-							document.getElementById(
-    "edit-product-is-new"
-).checked =
-    product.is_new || false;
 
 
-document.getElementById(
-    "edit-product-is-sale"
-).checked =
-    product.is_sale || false;
+                        document.getElementById(
+                            "edit-product-is-new"
+                        ).checked =
+                            product.is_new || false;
 
 
-document.getElementById(
-    "edit-product-sale-price"
-).value =
-    product.sale_price ?? "";
+                        document.getElementById(
+                            "edit-product-is-sale"
+                        ).checked =
+                            product.is_sale || false;
+
+
+                        document.getElementById(
+                            "edit-product-sale-price"
+                        ).value =
+                            product.sale_price ?? "";
 
                     }
                 );
@@ -1126,23 +1677,23 @@ document.getElementById(
             document.getElementById(
                 "product-image"
             ).value.trim();
-			
-			const isNew =
-    document.getElementById(
-        "product-is-new"
-    ).checked;
 
-const isSale =
-    document.getElementById(
-        "product-is-sale"
-    ).checked;
+        const isNew =
+            document.getElementById(
+                "product-is-new"
+            ).checked;
 
-const salePrice =
-    Number(
-        document.getElementById(
-            "product-sale-price"
-        ).value
-    );
+        const isSale =
+            document.getElementById(
+                "product-is-sale"
+            ).checked;
+
+        const salePrice =
+            Number(
+                document.getElementById(
+                    "product-sale-price"
+                ).value
+            );
 
 
         if (!name) {
@@ -1194,12 +1745,12 @@ const salePrice =
                     price,
                     product_url: productUrl,
                     image_url: imageUrl,
-					is_new: isNew,
-is_sale: isSale,
-sale_price:
-    isSale && Number.isFinite(salePrice)
-        ? salePrice
-        : null
+                    is_new: isNew,
+                    is_sale: isSale,
+                    sale_price:
+                        isSale && Number.isFinite(salePrice)
+                            ? salePrice
+                            : null
 
                 });
 
@@ -1243,6 +1794,18 @@ sale_price:
 
         document.getElementById(
             "product-image"
+        ).value = "";
+
+        document.getElementById(
+            "product-is-new"
+        ).checked = false;
+
+        document.getElementById(
+            "product-is-sale"
+        ).checked = false;
+
+        document.getElementById(
+            "product-sale-price"
         ).value = "";
 
 
@@ -1310,23 +1873,23 @@ document.getElementById(
             document.getElementById(
                 "edit-product-image"
             ).value.trim();
-			
-			const isNew =
-    document.getElementById(
-        "edit-product-is-new"
-    ).checked;
 
-const isSale =
-    document.getElementById(
-        "edit-product-is-sale"
-    ).checked;
+        const isNew =
+            document.getElementById(
+                "edit-product-is-new"
+            ).checked;
 
-const salePrice =
-    Number(
-        document.getElementById(
-            "edit-product-sale-price"
-        ).value
-    );
+        const isSale =
+            document.getElementById(
+                "edit-product-is-sale"
+            ).checked;
+
+        const salePrice =
+            Number(
+                document.getElementById(
+                    "edit-product-sale-price"
+                ).value
+            );
 
 
         if (!name || !category) {
@@ -1367,12 +1930,12 @@ const salePrice =
                     price,
                     product_url: productUrl,
                     image_url: imageUrl,
-is_new: isNew,
-is_sale: isSale,
-sale_price:
-    isSale && Number.isFinite(salePrice)
-        ? salePrice
-        : null
+                    is_new: isNew,
+                    is_sale: isSale,
+                    sale_price:
+                        isSale && Number.isFinite(salePrice)
+                            ? salePrice
+                            : null
 
                 })
                 .eq(
@@ -1579,21 +2142,24 @@ async function loadMissionDefinitions() {
 
 }
 
+
 async function loadBadgeMissionOptions() {
 
     const select =
-    document.getElementById(
-        "badge-unlock-mission"
-    );
+        document.getElementById(
+            "badge-unlock-mission"
+        );
 
-const editSelect =
-    document.getElementById(
-        "edit-badge-unlock-mission"
-    );
+    const editSelect =
+        document.getElementById(
+            "edit-badge-unlock-mission"
+        );
 
-if (!select && !editSelect) {
-    return;
-}
+
+    if (!select && !editSelect) {
+        return;
+    }
+
 
     const {
         data,
@@ -1602,6 +2168,7 @@ if (!select && !editSelect) {
         await supabaseClient.rpc(
             "get_all_missions_for_admin"
         );
+
 
     if (error) {
 
@@ -1613,25 +2180,30 @@ if (!select && !editSelect) {
         return;
     }
 
+
     const missionOptions = `
-    <option value="">
-        -- Wybierz misję --
-    </option>
-`;
+        <option value="">
+            -- Wybierz misję --
+        </option>
+    `;
 
-if (select) {
-    select.innerHTML =
-        missionOptions;
-}
 
-if (editSelect) {
-    editSelect.innerHTML =
-        missionOptions;
-}
+    if (select) {
+        select.innerHTML =
+            missionOptions;
+    }
+
+
+    if (editSelect) {
+        editSelect.innerHTML =
+            missionOptions;
+    }
+
 
     if (!data) {
         return;
     }
+
 
     data.forEach(
         function(mission) {
@@ -1641,8 +2213,10 @@ if (editSelect) {
                     "option"
                 );
 
+
             option.value =
                 mission.id;
+
 
             option.textContent =
                 `${mission.name} ${
@@ -1651,20 +2225,27 @@ if (editSelect) {
                         : "(nieaktywna)"
                 }`;
 
-            if (select) {
-    select.appendChild(
-        option.cloneNode(true)
-    );
-}
 
-if (editSelect) {
-    editSelect.appendChild(
-        option
-    );
-}
+            if (select) {
+
+                select.appendChild(
+                    option.cloneNode(true)
+                );
+
+            }
+
+
+            if (editSelect) {
+
+                editSelect.appendChild(
+                    option
+                );
+
+            }
 
         }
     );
+
 }
 
 
@@ -1833,8 +2414,6 @@ document.addEventListener(
     async function(event) {
 
 
-        // 🗑️ USUWANIE MISJI
-
         if (
             event.target.classList.contains(
                 "delete-mission"
@@ -1898,8 +2477,6 @@ document.addEventListener(
         }
 
 
-        // ✏️ EDYCJA MISJI
-
         if (
             event.target.classList.contains(
                 "edit-mission"
@@ -1958,8 +2535,6 @@ document.addEventListener(
 
         }
 
-
-        // 💾 ZAPIS EDYCJI MISJI
 
         if (
             event.target.id ===
@@ -2083,8 +2658,6 @@ document.addEventListener(
         }
 
 
-        // ❌ ANULOWANIE EDYCJI MISJI
-
         if (
             event.target.id ===
             "cancel-edit-mission-button"
@@ -2099,8 +2672,6 @@ document.addEventListener(
 
         }
 
-
-        // ⏸️ / ▶️ MISJA
 
         if (
             event.target.classList.contains(
@@ -2238,23 +2809,23 @@ async function loadBadgeDefinitions() {
                 <p>
                     ${badge.description}
                 </p>
-				
-				<p>
-    🔓 Warunek:
-    ${
-        badge.unlock_type === "badge_count"
-            ? `Zdobycie ${badge.unlock_value} odznak`
-            : badge.unlock_type === "mission"
-                ? `Ukończenie misji`
-                : badge.unlock_type === "first_login"
-                    ? "Pierwsze logowanie"
-                    : badge.unlock_type === "first_purchase"
-                        ? "Pierwszy zakup"
-                        : badge.unlock_type === "all_badges"
-                            ? "Zdobycie wszystkich pozostałych odznak"
-                            : "Ręcznie"
-    }
-</p>
+
+                <p>
+                    🔓 Warunek:
+                    ${
+                        badge.unlock_type === "badge_count"
+                            ? `Zdobycie ${badge.unlock_value} odznak`
+                            : badge.unlock_type === "mission"
+                                ? `Ukończenie misji`
+                                : badge.unlock_type === "first_login"
+                                    ? "Pierwsze logowanie"
+                                    : badge.unlock_type === "first_purchase"
+                                        ? "Pierwszy zakup"
+                                        : badge.unlock_type === "all_badges"
+                                            ? "Zdobycie wszystkich pozostałych odznak"
+                                            : "Ręcznie"
+                    }
+                </p>
 
                 <p>
                     ${
@@ -2284,9 +2855,9 @@ async function loadBadgeDefinitions() {
                     data-name="${badge.name.replace(/"/g, "&quot;")}"
                     data-description="${badge.description.replace(/"/g, "&quot;")}"
                     data-icon="${badge.icon.replace(/"/g, "&quot;")}"
-					data-unlock-type="${badge.unlock_type}"
-					data-unlock-value="${badge.unlock_value ?? ""}"
-					data-unlock-mission-id="${badge.unlock_mission_id ?? ""}"
+                    data-unlock-type="${badge.unlock_type}"
+                    data-unlock-value="${badge.unlock_value ?? ""}"
+                    data-unlock-mission-id="${badge.unlock_mission_id ?? ""}"
                 >
                     ✏️ Edytuj
                 </button>
@@ -2352,39 +2923,70 @@ document.getElementById(
     }
 );
 
-const badgeUnlockType = document.getElementById("badge-unlock-type");
-const badgeCountField = document.getElementById("badge-count-field");
-const badgeMissionField = document.getElementById("badge-mission-field");
+
+const badgeUnlockType =
+    document.getElementById(
+        "badge-unlock-type"
+    );
+
+
+const badgeCountField =
+    document.getElementById(
+        "badge-count-field"
+    );
+
+
+const badgeMissionField =
+    document.getElementById(
+        "badge-mission-field"
+    );
+
 
 function updateBadgeUnlockFields() {
-    const type = badgeUnlockType.value;
+
+    const type =
+        badgeUnlockType.value;
+
 
     badgeCountField.style.display =
         type === "badge_count"
             ? "block"
             : "none";
 
+
     badgeMissionField.style.display =
         type === "mission"
             ? "block"
             : "none";
+
 }
+
 
 badgeUnlockType.addEventListener(
     "change",
     updateBadgeUnlockFields
 );
 
+
 updateBadgeUnlockFields();
 
+
 const editBadgeUnlockType =
-    document.getElementById("edit-badge-unlock-type");
+    document.getElementById(
+        "edit-badge-unlock-type"
+    );
+
 
 const editBadgeCountField =
-    document.getElementById("edit-badge-count-field");
+    document.getElementById(
+        "edit-badge-count-field"
+    );
+
 
 const editBadgeMissionField =
-    document.getElementById("edit-badge-mission-field");
+    document.getElementById(
+        "edit-badge-mission-field"
+    );
 
 
 function updateEditBadgeUnlockFields() {
@@ -2392,15 +2994,18 @@ function updateEditBadgeUnlockFields() {
     const type =
         editBadgeUnlockType.value;
 
+
     editBadgeCountField.style.display =
         type === "badge_count"
             ? "block"
             : "none";
 
+
     editBadgeMissionField.style.display =
         type === "mission"
             ? "block"
             : "none";
+
 }
 
 
@@ -2409,7 +3014,9 @@ editBadgeUnlockType.addEventListener(
     updateEditBadgeUnlockFields
 );
 
+
 updateEditBadgeUnlockFields();
+
 
 document.getElementById(
     "save-badge-button"
@@ -2447,37 +3054,41 @@ document.getElementById(
 
 
         const {
-    error
-} =
-    await supabaseClient.rpc(
-        "create_badge_for_admin",
-        {
-            p_name:
-                name,
+            error
+        } =
+            await supabaseClient.rpc(
+                "create_badge_for_admin",
+                {
+                    p_name:
+                        name,
 
-            p_description:
-                description,
+                    p_description:
+                        description,
 
-            p_icon:
-                icon,
+                    p_icon:
+                        icon,
 
-            p_unlock_type:
-                badgeUnlockType.value,
+                    p_unlock_type:
+                        badgeUnlockType.value,
 
-            p_unlock_value:
-                badgeUnlockType.value === "badge_count"
-                    ? parseInt(
-                        document.getElementById("badge-unlock-value").value,
-                        10
-                    )
-                    : null,
+                    p_unlock_value:
+                        badgeUnlockType.value === "badge_count"
+                            ? parseInt(
+                                document.getElementById(
+                                    "badge-unlock-value"
+                                ).value,
+                                10
+                            )
+                            : null,
 
-            p_unlock_mission_id:
-                badgeUnlockType.value === "mission"
-                    ? document.getElementById("badge-unlock-mission").value || null
-                    : null
-        }
-    );
+                    p_unlock_mission_id:
+                        badgeUnlockType.value === "mission"
+                            ? document.getElementById(
+                                "badge-unlock-mission"
+                            ).value || null
+                            : null
+                }
+            );
 
 
         if (error) {
@@ -2517,8 +3128,6 @@ document.getElementById(
 
 
         await loadBadgeDefinitions();
-		
-		
 
     }
 );
@@ -2532,8 +3141,6 @@ document.addEventListener(
     "click",
     async function(event) {
 
-
-        // ✏️ EDYCJA
 
         if (
             event.target.classList.contains(
@@ -2567,23 +3174,27 @@ document.addEventListener(
                 "edit-badge-icon"
             ).value =
                 button.dataset.icon;
-				
-				document.getElementById(
-    "edit-badge-unlock-type"
-).value =
-    button.dataset.unlockType;
 
-document.getElementById(
-    "edit-badge-unlock-value"
-).value =
-    button.dataset.unlockValue;
 
-document.getElementById(
-    "edit-badge-unlock-mission"
-).value =
-    button.dataset.unlockMissionId;
+            document.getElementById(
+                "edit-badge-unlock-type"
+            ).value =
+                button.dataset.unlockType;
 
-updateEditBadgeUnlockFields();
+
+            document.getElementById(
+                "edit-badge-unlock-value"
+            ).value =
+                button.dataset.unlockValue;
+
+
+            document.getElementById(
+                "edit-badge-unlock-mission"
+            ).value =
+                button.dataset.unlockMissionId;
+
+
+            updateEditBadgeUnlockFields();
 
 
             form.dataset.badgeId =
@@ -2604,8 +3215,6 @@ updateEditBadgeUnlockFields();
 
         }
 
-
-        // 💾 ZAPIS EDYCJI
 
         if (
             event.target.id ===
@@ -2651,6 +3260,12 @@ updateEditBadgeUnlockFields();
                 true;
 
 
+            const unlockType =
+                document.getElementById(
+                    "edit-badge-unlock-type"
+                ).value;
+
+
             const {
                 error
             } =
@@ -2667,33 +3282,27 @@ updateEditBadgeUnlockFields();
                             description,
 
                         p_icon:
-    icon,
+                            icon,
 
-p_unlock_type:
-    document.getElementById(
-        "edit-badge-unlock-type"
-    ).value,
+                        p_unlock_type:
+                            unlockType,
 
-p_unlock_value:
-    document.getElementById(
-        "edit-badge-unlock-type"
-    ).value === "badge_count"
-        ? parseInt(
-            document.getElementById(
-                "edit-badge-unlock-value"
-            ).value,
-            10
-        )
-        : null,
+                        p_unlock_value:
+                            unlockType === "badge_count"
+                                ? parseInt(
+                                    document.getElementById(
+                                        "edit-badge-unlock-value"
+                                    ).value,
+                                    10
+                                )
+                                : null,
 
-p_unlock_mission_id:
-    document.getElementById(
-        "edit-badge-unlock-type"
-    ).value === "mission"
-        ? document.getElementById(
-            "edit-badge-unlock-mission"
-        ).value || null
-        : null
+                        p_unlock_mission_id:
+                            unlockType === "mission"
+                                ? document.getElementById(
+                                    "edit-badge-unlock-mission"
+                                ).value || null
+                                : null
                     }
                 );
 
@@ -2730,8 +3339,6 @@ p_unlock_mission_id:
         }
 
 
-        // ❌ ANULOWANIE
-
         if (
             event.target.id ===
             "cancel-edit-badge-button"
@@ -2746,8 +3353,6 @@ p_unlock_mission_id:
 
         }
 
-
-        // ⏸️ / ▶️ AKTYWACJA
 
         if (
             event.target.classList.contains(
@@ -2803,8 +3408,6 @@ p_unlock_mission_id:
 
         }
 
-
-        // 🗑️ USUWANIE
 
         if (
             event.target.classList.contains(
@@ -3131,26 +3734,17 @@ document.addEventListener(
 
 async function loadAdminOrders() {
 
-    const container =
-        document.getElementById(
-            "admin-orders"
-        );
-
+    const container = document.getElementById("admin-orders");
 
     const {
-        data,
+        data: orders,
         error
-    } =
-        await supabaseClient
-            .from("orders")
-            .select("*")
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
-
+    } = await supabaseClient
+        .from("orders")
+        .select("*")
+        .order("created_at", {
+            ascending: false
+        });
 
     if (error) {
 
@@ -3163,50 +3757,43 @@ async function loadAdminOrders() {
             "<p>Nie udało się pobrać zamówień.</p>";
 
         return;
-
     }
 
-
-    if (!data || data.length === 0) {
+    if (!orders || orders.length === 0) {
 
         container.innerHTML =
             "<p>Brak zamówień. 🛒</p>";
 
         return;
-
     }
-
 
     container.innerHTML = "";
 
+    for (const order of orders) {
 
-    for (
-        const order of data
-    ) {
+        // Pobieramy nazwę użytkownika
+        let username = "Nieznany użytkownik";
 
-        const orderElement =
-            document.createElement(
-                "div"
-            );
+        const {
+            data: profile
+        } = await supabaseClient
+            .from("profiles")
+            .select("username")
+            .eq("id", order.user_id)
+            .maybeSingle();
 
+        if (profile && profile.username) {
+            username = profile.username;
+        }
 
-        orderElement.classList.add(
-            "admin-order"
-        );
-
-
+        // Pobieramy produkty zamówienia
         const {
             data: items,
             error: itemsError
-        } =
-            await supabaseClient
-                .from("order_items")
-                .select("*")
-                .eq(
-                    "order_id",
-                    order.id
-                );
-
+        } = await supabaseClient
+            .from("order_items")
+            .select("*")
+            .eq("order_id", order.id);
 
         if (itemsError) {
 
@@ -3216,9 +3803,14 @@ async function loadAdminOrders() {
             );
 
             continue;
-
         }
 
+        const orderElement =
+            document.createElement("div");
+
+        orderElement.classList.add(
+            "admin-order"
+        );
 
         orderElement.innerHTML = `
 
@@ -3227,47 +3819,38 @@ async function loadAdminOrders() {
             </h3>
 
             <p>
-                ID:
+                👤 Użytkownik:
+                <strong>${username}</strong>
+            </p>
+
+            <p>
+                🆔 ID:
                 ${order.id}
             </p>
 
             <p>
-                Użytkownik:
-                ${order.user_id}
-            </p>
-
-            <p>
-                Data:
+                📅 Data:
                 ${new Date(
                     order.created_at
-                ).toLocaleString(
-                    "pl-PL"
-                )}
+                ).toLocaleString("pl-PL")}
             </p>
 
-
             <h4>
-                🛒 Produkty:
+                🛒 Zamówione produkty:
             </h4>
-
 
             <div class="admin-order-products"></div>
 
-
-            <p>
-                Razem:
-                ${order.total} 💕
+            <p class="admin-order-total">
+                💰 Razem:
+                <strong>${order.total} 💕</strong>
             </p>
 
-
             <p>
-                Status:
+                📌 Status:
             </p>
 
-
-            <select
-                class="order-status"
-            >
+            <select class="order-status">
 
                 <option
                     value="pending"
@@ -3301,48 +3884,48 @@ async function loadAdminOrders() {
 
         `;
 
-
         const productsContainer =
             orderElement.querySelector(
                 ".admin-order-products"
             );
 
+        if (!items || items.length === 0) {
 
-        items.forEach(
-            function(item) {
+            productsContainer.innerHTML =
+                "<p>Brak informacji o produktach.</p>";
+
+        } else {
+
+            items.forEach(function(item) {
 
                 const productElement =
-                    document.createElement(
-                        "p"
-                    );
+                    document.createElement("p");
 
+                const itemTotal =
+                    Number(item.price || 0) *
+                    Number(item.quantity || 0);
 
                 productElement.textContent =
-                    "🛒 " +
-                    item.product_name +
+                    "🛍️ " +
+                    (item.product_name || "Nieznany produkt") +
                     " × " +
                     item.quantity +
                     " — " +
-                    (
-                        item.price *
-                        item.quantity
-                    ) +
+                    itemTotal +
                     " 💕";
-
 
                 productsContainer.appendChild(
                     productElement
                 );
 
-            }
-        );
+            });
 
+        }
 
         const statusSelect =
             orderElement.querySelector(
                 ".order-status"
             );
-
 
         statusSelect.addEventListener(
             "change",
@@ -3350,18 +3933,16 @@ async function loadAdminOrders() {
 
                 const {
                     error
-                } =
-                    await supabaseClient
-                        .from("orders")
-                        .update({
-                            status:
-                                statusSelect.value
-                        })
-                        .eq(
-                            "id",
-                            order.id
-                        );
-
+                } = await supabaseClient
+                    .from("orders")
+                    .update({
+                        status:
+                            statusSelect.value
+                    })
+                    .eq(
+                        "id",
+                        order.id
+                    );
 
                 if (error) {
 
@@ -3371,9 +3952,7 @@ async function loadAdminOrders() {
                     );
 
                     return;
-
                 }
-
 
                 alert(
                     "Status zamówienia został zmieniony! 📦💕"
@@ -3381,7 +3960,6 @@ async function loadAdminOrders() {
 
             }
         );
-
 
         container.appendChild(
             orderElement
@@ -3413,8 +3991,8 @@ checkAdmin().then(
         await loadMissionDefinitions();
 
         await loadBadgeDefinitions();
-		
-		await loadBadgeMissionOptions();
+
+        await loadBadgeMissionOptions();
 
     }
 );

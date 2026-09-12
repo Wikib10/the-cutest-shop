@@ -1,73 +1,173 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Misje - The Cutest Shop</title>
+    <meta charset="UTF-8">
 
-<link rel="stylesheet" href="style.css">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Misje - The Cutest Shop</title>
+
+    <link rel="stylesheet"
+          href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
+
 
 <body>
 
+
+<!-- =========================
+     MENU
+========================= -->
+
 <nav>
-    <a href="index.html">Home</a>
-    <a href="nowosci.html">Nowości</a>
-    <a href="promocje.html">Promocje</a>
-    <a href="misje.html">Misje</a>
-    <a href="osiagniecia.html">Osiągnięcia</a>
-    <a href="zamowienia.html">Zamówienia</a>
-    <a href="koszyk.html">Koszyk 🛒</a>
+
+    <a href="index.html">
+        Home
+    </a>
+
+    <a href="nowosci.html">
+        Nowości
+    </a>
+
+    <a href="promocje.html">
+        Promocje
+    </a>
+
+    <a href="misje.html">
+        Misje
+    </a>
+
+    <a href="osiagniecia.html">
+        Osiągnięcia
+    </a>
+
+    <a href="zamowienia.html">
+        Zamówienia
+    </a>
+
+    <a href="ulubione.html">
+        Ulubione ❤️
+    </a>
+
+    <a href="koszyk.html">
+        Koszyk 🛒
+    </a>
+
+    <a
+        href="profil.html"
+        id="username-link"
+        class="username-link frame-none"
+    >
+        👤 Ładowanie...
+    </a>
+
 </nav>
 
-<h1>Misje 🎯</h1>
+
+<!-- =========================
+     NAGŁÓWEK
+========================= -->
+
+<h1>
+    Misje 🎯
+</h1>
+
+
+<!-- =========================
+     MIŁOSTKI
+========================= -->
 
 <div class="welcome">
+
     <h2>
-        Twoje milostki:
+        Twoje Miłostki:
         <span id="milostki">0</span> 💕
     </h2>
+
 </div>
+
+
+<!-- =========================
+     WSTĘP
+========================= -->
 
 <div class="welcome">
-    <h2>Gotowy na misję, Misiu? 💕</h2>
+
+    <h2>
+        Gotowy na misję, Misiu? 💕
+    </h2>
+
     <p>
-        Wykonuj misje, zdobywaj osiągnięcia i baw się dobrze!
+        Wykonuj misje, zdobywaj osiągnięcia
+        i baw się dobrze!
     </p>
-</div>
 
-<!-- ========================= -->
-<!-- MISJE MANUALNE -->
-<!-- ========================= -->
-
-<h2>💌 Nasze misje</h2>
-
-<div class="missions" id="personal-missions">
-    <p>Ładowanie misji... 💕</p>
 </div>
 
 
-<!-- ========================= -->
-<!-- MISJE AUTOMATYCZNE -->
-<!-- ========================= -->
+<!-- =========================
+     MISJE MANUALNE
+========================= -->
 
-<h2>🛍️ Misje sklepowe</h2>
+<h2>
+    💌 Nasze misje
+</h2>
 
-<div class="missions" id="automatic-missions">
-    <p>Ładowanie misji... 💕</p>
+
+<div
+    class="missions"
+    id="personal-missions"
+>
+
+    <p>
+        Ładowanie misji... 💕
+    </p>
+
 </div>
+
+
+<!-- =========================
+     MISJE AUTOMATYCZNE
+========================= -->
+
+<h2>
+    🛍️ Misje sklepowe
+</h2>
+
+
+<div
+    class="missions"
+    id="automatic-missions"
+>
+
+    <p>
+        Ładowanie misji... 💕
+    </p>
+
+</div>
+
 
 
 <script>
 
+
+// ==========================================
+// SUPABASE
+// ==========================================
+
 const SUPABASE_URL =
     "https://peohsktyolhtjdzwjrrk.supabase.co";
 
+
 const SUPABASE_PUBLISHABLE_KEY =
     "sb_publishable_HeAIYFUT37HmOQkZSUr8iw_x_ej8pXN";
+
 
 const supabaseClient =
     window.supabase.createClient(
@@ -76,63 +176,226 @@ const supabaseClient =
     );
 
 
+
+// ==========================================
+// RAMKI NICKU
+// ==========================================
+
+const frameClasses = [
+    "frame-none",
+    "frame-pink",
+    "frame-purple",
+    "frame-blue",
+    "frame-mint",
+    "frame-yellow",
+    "frame-white",
+    "frame-black",
+    "frame-gray",
+    "frame-crystal",
+    "frame-royal",
+    "frame-gold",
+    "frame-vip"
+];
+
+
+
+// ==========================================
+// POBIERANIE NICKU
+// ==========================================
+
+async function loadUsername() {
+
+    const {
+        data: { user }
+    } =
+        await supabaseClient.auth.getUser();
+
+
+    if (!user) {
+        return;
+    }
+
+
+    const { data, error } =
+        await supabaseClient
+            .from("profiles")
+            .select("username, username_frame")
+            .eq("id", user.id)
+            .single();
+
+
+    if (error) {
+
+        console.error(
+            "Blad pobierania profilu:",
+            error
+        );
+
+        return;
+    }
+
+
+    const usernameLink =
+        document.getElementById(
+            "username-link"
+        );
+
+
+    if (!usernameLink) {
+        return;
+    }
+
+
+    usernameLink.textContent =
+        "\u{1F464} " + data.username;
+
+
+    frameClasses.forEach(
+        function(frameClass) {
+
+            usernameLink.classList.remove(
+                frameClass
+            );
+
+        }
+    );
+
+
+    const selectedFrame =
+        data.username_frame ||
+        "frame-none";
+
+
+    usernameLink.classList.add(
+        selectedFrame
+    );
+
+}
+
+
+
+// ==========================================
+// SPRAWDZENIE LOGOWANIA
+// ==========================================
+
+async function checkLogin() {
+
+    const { data, error } =
+        await supabaseClient.auth.getSession();
+
+
+    if (error || !data.session) {
+
+        window.location.href =
+            "logowanie.html";
+
+        return false;
+    }
+
+
+    await loadUsername();
+
+    return true;
+
+}
+
+
+
 // ==========================================
 // GŁÓWNA FUNKCJA ŁADOWANIA MISJI
 // ==========================================
 
 async function loadMissions() {
 
-    // Pobieramy zalogowanego użytkownika
     const {
         data: userData,
         error: userError
-    } = await supabaseClient.auth.getUser();
+    } =
+        await supabaseClient.auth.getUser();
 
-    if (userError || !userData.user) {
+
+    // ======================================
+    // BRAK UŻYTKOWNIKA
+    // ======================================
+
+    if (
+        userError ||
+        !userData.user
+    ) {
 
         console.error(
             "Nie znaleziono zalogowanego użytkownika."
         );
 
-        document.getElementById("personal-missions").innerHTML = `
+
+        document.getElementById(
+            "personal-missions"
+        ).innerHTML = `
+
             <div class="mission">
-                <h3>🔐 Zaloguj się</h3>
-                <p>Aby wykonywać misje, musisz być zalogowany.</p>
+
+                <h3>
+                    🔐 Zaloguj się
+                </h3>
+
+                <p>
+                    Aby wykonywać misje,
+                    musisz być zalogowany.
+                </p>
+
             </div>
+
         `;
 
-        document.getElementById("automatic-missions").innerHTML = `
+
+        document.getElementById(
+            "automatic-missions"
+        ).innerHTML = `
+
             <div class="mission">
-                <h3>🔐 Zaloguj się</h3>
-                <p>Aby zobaczyć swoje misje sklepowe, musisz być zalogowany.</p>
+
+                <h3>
+                    🔐 Zaloguj się
+                </h3>
+
+                <p>
+                    Aby zobaczyć swoje misje
+                    sklepowe, musisz być zalogowany.
+                </p>
+
             </div>
+
         `;
+
 
         return;
     }
 
 
-    const userId = userData.user.id;
+    const userId =
+        userData.user.id;
 
 
-    // ==========================================
-    // POBIERANIE UKOŃCZONYCH MISJI TEGO USERA
-    // ==========================================
+
+    // ======================================
+    // UKOŃCZONE MISJE
+    // ======================================
 
     const {
         data: completedMissions,
         error: completedError
-    } = await supabaseClient
-        .from("user_missions")
-        .select("mission_id, status")
-        .eq("user_id", userId)
-        .eq("status", "approved");
+    } =
+        await supabaseClient
+            .from("user_missions")
+            .select("mission_id, status")
+            .eq("user_id", userId)
+            .eq("status", "approved");
 
 
     if (completedError) {
 
         console.error(
-            "Błąd pobierania ukończonych misji:",
+            "Blad pobierania ukonczonych misji:",
             completedError
         );
 
@@ -140,29 +403,25 @@ async function loadMissions() {
     }
 
 
-    console.log(
-        "UKOŃCZONE MISJE TEGO UŻYTKOWNIKA:",
-        completedMissions
-    );
 
-
-    // ==========================================
-    // POBIERANIE WSZYSTKICH AKTYWNYCH MISJI
-    // ==========================================
+    // ======================================
+    // WSZYSTKIE AKTYWNE MISJE
+    // ======================================
 
     const {
         data: missions,
         error: missionsError
-    } = await supabaseClient
-        .from("missions")
-        .select("*")
-        .eq("active", true);
+    } =
+        await supabaseClient
+            .from("missions")
+            .select("*")
+            .eq("active", true);
 
 
     if (missionsError) {
 
         console.error(
-            "Błąd pobierania misji:",
+            "Blad pobierania misji:",
             missionsError
         );
 
@@ -170,18 +429,23 @@ async function loadMissions() {
     }
 
 
-    // ==========================================
+
+    // ======================================
     // MISJE MANUALNE
-    // ==========================================
+    // ======================================
 
     const manualMissions =
         missions.filter(
-            mission => mission.type === "manual"
+            mission =>
+                mission.type === "manual"
         );
 
 
     const personalContainer =
-        document.getElementById("personal-missions");
+        document.getElementById(
+            "personal-missions"
+        );
+
 
     personalContainer.innerHTML = "";
 
@@ -189,85 +453,121 @@ async function loadMissions() {
     let visibleManualMissions = 0;
 
 
-    manualMissions.forEach(function(mission) {
+    manualMissions.forEach(
+        function(mission) {
 
-        const completed =
-            completedMissions.some(
-                completedMission =>
-                    completedMission.mission_id === mission.id
+            const completed =
+                completedMissions.some(
+                    completedMission =>
+                        completedMission.mission_id ===
+                        mission.id
+                );
+
+
+            // Ukończonych nie pokazujemy
+
+            if (completed) {
+                return;
+            }
+
+
+            visibleManualMissions++;
+
+
+            const missionElement =
+                document.createElement(
+                    "div"
+                );
+
+
+            missionElement.className =
+                "mission";
+
+
+            missionElement.innerHTML = `
+
+                <h3>
+                    ${mission.name}
+                </h3>
+
+
+                <p>
+                    ${mission.description}
+                </p>
+
+
+                <p>
+                    🎁 Nagroda:
+                    ${mission.reward} 💕
+                </p>
+
+
+                <button
+                    class="mission-button"
+                    onclick="submitMission(
+                        '${mission.id}',
+                        this
+                    )"
+                >
+                    ✓ Zrobione
+                </button>
+
+            `;
+
+
+            personalContainer.appendChild(
+                missionElement
             );
 
-
-        // Jeżeli ukończona — nie pokazujemy
-        if (completed) {
-            return;
         }
+    );
 
 
-        visibleManualMissions++;
 
+    // ======================================
+    // BRAK MANUALNYCH MISJI
+    // ======================================
 
-        const missionElement =
-            document.createElement("div");
-
-        missionElement.className = "mission";
-
-
-        missionElement.innerHTML = `
-            <h3>${mission.name}</h3>
-
-            <p>
-                ${mission.description}
-            </p>
-
-            <p>
-                🎁 Nagroda:
-                ${mission.reward} 💕
-            </p>
-
-            <button
-                class="mission-button"
-                onclick="submitMission('${mission.id}', this)"
-            >
-                ✓ Zrobione
-            </button>
-        `;
-
-
-        personalContainer.appendChild(
-            missionElement
-        );
-
-    });
-
-
-    // Jeżeli nie ma już manualnych misji
-    if (visibleManualMissions === 0) {
+    if (
+        visibleManualMissions === 0
+    ) {
 
         personalContainer.innerHTML = `
+
             <div class="mission">
-                <h3>🎉 Wszystko zrobione!</h3>
+
+                <h3>
+                    🎉 Wszystko zrobione!
+                </h3>
+
                 <p>
-                    Nie masz teraz żadnych nowych misji.
-                    💕
+                    Nie masz teraz żadnych
+                    nowych misji. 💕
                 </p>
+
             </div>
+
         `;
     }
 
 
-    // ==========================================
+
+    // ======================================
     // MISJE AUTOMATYCZNE
-    // ==========================================
+    // ======================================
 
     const automaticMissions =
         missions.filter(
-            mission => mission.type === "automatic"
+            mission =>
+                mission.type === "automatic"
         );
 
 
     const automaticContainer =
-        document.getElementById("automatic-missions");
+        document.getElementById(
+            "automatic-missions"
+        );
+
 
     automaticContainer.innerHTML = "";
 
@@ -275,81 +575,112 @@ async function loadMissions() {
     let visibleAutomaticMissions = 0;
 
 
-    automaticMissions.forEach(function(mission) {
+    automaticMissions.forEach(
+        function(mission) {
 
-        const completed =
-            completedMissions.some(
-                completedMission =>
-                    completedMission.mission_id === mission.id
+            const completed =
+                completedMissions.some(
+                    completedMission =>
+                        completedMission.mission_id ===
+                        mission.id
+                );
+
+
+            // Ukończonych nie pokazujemy
+
+            if (completed) {
+                return;
+            }
+
+
+            visibleAutomaticMissions++;
+
+
+            const missionElement =
+                document.createElement(
+                    "div"
+                );
+
+
+            missionElement.className =
+                "mission";
+
+
+            missionElement.innerHTML = `
+
+                <h3>
+                    ${mission.name}
+                </h3>
+
+
+                <p>
+                    ${mission.description}
+                </p>
+
+
+                <p>
+                    🎁 Nagroda:
+                    ${mission.reward} 💕
+                </p>
+
+
+                <p>
+                    ⚡ Ta misja wykona się
+                    automatycznie po spełnieniu
+                    warunku.
+                </p>
+
+            `;
+
+
+            automaticContainer.appendChild(
+                missionElement
             );
 
-
-        // Jeżeli misja została wykonana,
-        // całkowicie ją ukrywamy
-        if (completed) {
-            return;
         }
+    );
 
 
-        visibleAutomaticMissions++;
 
+    // ======================================
+    // BRAK AUTOMATYCZNYCH MISJI
+    // ======================================
 
-        const missionElement =
-            document.createElement("div");
-
-        missionElement.className = "mission";
-
-
-        missionElement.innerHTML = `
-            <h3>${mission.name}</h3>
-
-            <p>
-                ${mission.description}
-            </p>
-
-            <p>
-                🎁 Nagroda:
-                ${mission.reward} 💕
-            </p>
-
-            <p>
-                ⚡ Ta misja wykona się automatycznie
-                po spełnieniu warunku.
-            </p>
-        `;
-
-
-        automaticContainer.appendChild(
-            missionElement
-        );
-
-    });
-
-
-    // Jeżeli wszystkie automatyczne są ukończone
-    if (visibleAutomaticMissions === 0) {
+    if (
+        visibleAutomaticMissions === 0
+    ) {
 
         automaticContainer.innerHTML = `
+
             <div class="mission">
-                <h3>🏆 Wszystkie misje sklepowe wykonane!</h3>
+
+                <h3>
+                    🏆 Wszystkie misje sklepowe
+                    wykonane!
+                </h3>
+
 
                 <p>
                     Gratulacje, Misiu! 💕
                 </p>
 
+
                 <p>
                     Wykonałeś wszystkie dostępne
                     automatyczne misje.
                 </p>
+
             </div>
+
         `;
     }
 
 }
 
 
+
 // ==========================================
-// MILOSTKI
+// MIŁOSTKI
 // ==========================================
 
 async function loadMilostki() {
@@ -357,10 +688,14 @@ async function loadMilostki() {
     const {
         data: userData,
         error: userError
-    } = await supabaseClient.auth.getUser();
+    } =
+        await supabaseClient.auth.getUser();
 
 
-    if (userError || !userData.user) {
+    if (
+        userError ||
+        !userData.user
+    ) {
 
         console.error(
             "Nie znaleziono zalogowanego użytkownika."
@@ -373,17 +708,23 @@ async function loadMilostki() {
     const {
         data: profile,
         error
-    } = await supabaseClient
-        .from("profiles")
-        .select("id, username, milostki")
-        .eq("id", userData.user.id)
-        .maybeSingle();
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "id, username, milostki"
+            )
+            .eq(
+                "id",
+                userData.user.id
+            )
+            .maybeSingle();
 
 
     if (error) {
 
         console.error(
-            "Błąd pobierania milostek:",
+            "Blad pobierania Milostek:",
             error
         );
 
@@ -401,10 +742,13 @@ async function loadMilostki() {
     }
 
 
-    document.getElementById("milostki").textContent =
+    document.getElementById(
+        "milostki"
+    ).textContent =
         profile.milostki || 0;
 
 }
+
 
 
 // ==========================================
@@ -418,29 +762,32 @@ async function submitMission(
 
     button.disabled = true;
 
+
     button.textContent =
         "⏳ Wysyłanie...";
 
 
     const {
         error
-    } = await supabaseClient.rpc(
-        "submit_mission",
-        {
-            p_mission_id: missionId
-        }
-    );
+    } =
+        await supabaseClient.rpc(
+            "submit_mission",
+            {
+                p_mission_id: missionId
+            }
+        );
 
 
     if (error) {
 
         console.error(
-            "Błąd zgłaszania misji:",
+            "Blad zglaszania misji:",
             error
         );
 
 
         button.disabled = false;
+
 
         button.textContent =
             "✓ Zrobione";
@@ -450,26 +797,48 @@ async function submitMission(
             "Nie udało się zgłosić misji."
         );
 
+
         return;
     }
 
 
     button.textContent =
         "👀 Do sprawdzenia";
+
 }
+
 
 
 // ==========================================
 // START
 // ==========================================
 
-loadMissions();
-loadMilostki();
+async function startPage() {
+
+    const loggedIn =
+        await checkLogin();
+
+
+    if (!loggedIn) {
+        return;
+    }
+
+
+    await loadMissions();
+
+    await loadMilostki();
+
+}
+
+
+startPage();
 
 </script>
 
 
 <script src="script.js"></script>
 
+
 </body>
+
 </html>

@@ -1,23 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Koszyk - The Cutest Shop</title>
 <link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
 <body>
 
 <nav>
-<a href="index.html">Home</a>
-<a href="nowosci.html">Nowości</a>
-<a href="promocje.html">Promocje</a>
-<a href="misje.html">Misje</a>
-<a href="osiagniecia.html">Osiągnięcia</a>
-<a href="#">Zamówienia</a>
-<a href="koszyk.html">Koszyk🛒</a>
+    <a href="index.html">Home</a>
+    <a href="nowosci.html">Nowości</a>
+    <a href="promocje.html">Promocje</a>
+    <a href="misje.html">Misje</a>
+    <a href="osiagniecia.html">Osiągnięcia</a>
+    <a href="zamowienia.html">Zamówienia</a>
+    <a href="ulubione.html">Ulubione ❤️</a>
+    <a href="koszyk.html">Koszyk 🛒</a>
+
+    <a href="profil.html" id="username-link" class="username-link frame-none">
+        👤 Ładowanie...
+    </a>
 </nav>
 
 <h1>Twój koszyk 🛒</h1>
+
 <div id="cart-items"></div>
 
 <div id="cart-summary">
@@ -37,6 +47,119 @@
 
 </div>
 
+<script>
+
+const SUPABASE_URL = "https://peohsktyolhtjdzwjrrk.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_HeAIYFUT37HmOQkZSUr8iw_x_ej8pXN";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+const frameClasses = [
+    "frame-none",
+    "frame-pink",
+    "frame-purple",
+    "frame-blue",
+    "frame-mint",
+    "frame-yellow",
+    "frame-white",
+    "frame-black",
+    "frame-gray",
+    "frame-crystal",
+    "frame-royal",
+    "frame-gold",
+    "frame-vip"
+];
+
+
+// ==========================================
+// SPRAWDZENIE LOGOWANIA
+// ==========================================
+
+async function checkLogin() {
+
+    const { data, error } =
+        await supabaseClient.auth.getSession();
+
+    if (error || !data.session) {
+
+        window.location.href =
+            "logowanie.html";
+
+        return;
+    }
+
+    await loadUsername();
+}
+
+
+// ==========================================
+// NICK W MENU
+// ==========================================
+
+async function loadUsername() {
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (!user) return;
+
+    const { data, error } =
+        await supabaseClient
+            .from("profiles")
+            .select("username, username_frame")
+            .eq("id", user.id)
+            .single();
+
+    if (error) {
+
+        console.error(
+            "Błąd pobierania profilu:",
+            error
+        );
+
+        return;
+    }
+
+    const usernameLink =
+        document.getElementById(
+            "username-link"
+        );
+
+    if (!usernameLink) return;
+
+    usernameLink.textContent =
+        "\u{1F464} " + data.username;
+
+    frameClasses.forEach(function(frameClass) {
+
+        usernameLink.classList.remove(
+            frameClass
+        );
+
+    });
+
+    const selectedFrame =
+        data.username_frame ||
+        "frame-none";
+
+    usernameLink.classList.add(
+        selectedFrame
+    );
+}
+
+
+// ==========================================
+// START
+// ==========================================
+
+checkLogin();
+
+</script>
+
 <script src="cart.js"></script>
+
 </body>
 </html>

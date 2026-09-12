@@ -1,142 +1,521 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
+
 <head>
-<meta charset="UTF-8">
-<title>Zamówienia - The Cutest Shop</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Zamówienia - The Cutest Shop</title>
+
+    <link rel="stylesheet"
+          href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
+
 
 <body>
 
+
+<!-- =========================
+     MENU
+========================= -->
+
 <nav>
-<a href="index.html">Home</a>
-<a href="nowosci.html">Nowości</a>
-<a href="promocje.html">Promocje</a>
-<a href="misje.html">Misje</a>
-<a href="osiagniecia.html">Osiągnięcia</a>
-<a href="zamowienia.html">Zamówienia</a>
-<a href="koszyk.html">Koszyk🛒</a>
+
+    <a href="index.html">
+        Home
+    </a>
+
+    <a href="nowosci.html">
+        Nowości
+    </a>
+
+    <a href="promocje.html">
+        Promocje
+    </a>
+
+    <a href="misje.html">
+        Misje
+    </a>
+
+    <a href="osiagniecia.html">
+        Osiągnięcia
+    </a>
+
+    <a href="zamowienia.html">
+        Zamówienia
+    </a>
+
+    <a href="ulubione.html">
+        Ulubione ❤️
+    </a>
+
+    <a href="koszyk.html">
+        Koszyk 🛒
+    </a>
+
+    <a
+        href="profil.html"
+        id="username-link"
+        class="username-link frame-none"
+    >
+        👤 Ładowanie...
+    </a>
+
 </nav>
 
-<h1>Moje zamówienia 📦💕</h1>
+
+<!-- =========================
+     NAGŁÓWEK
+========================= -->
+
+<h1>
+    Moje zamówienia 📦💕
+</h1>
+
 
 <div id="orders-container">
-    <p>Ładowanie zamówień...</p>
+
+    <p>
+        Ładowanie zamówień...
+    </p>
+
 </div>
+
 
 <script>
 
-const SUPABASE_URL = "https://peohsktyolhtjdzwjrrk.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_HeAIYFUT37HmOQkZSUr8iw_x_ej8pXN";
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-);
+// ==========================================
+// SUPABASE
+// ==========================================
+
+const SUPABASE_URL =
+    "https://peohsktyolhtjdzwjrrk.supabase.co";
+
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_HeAIYFUT37HmOQkZSUr8iw_x_ej8pXN";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+
+// ==========================================
+// RAMKI NICKU
+// ==========================================
+
+const frameClasses = [
+    "frame-none",
+    "frame-pink",
+    "frame-purple",
+    "frame-blue",
+    "frame-mint",
+    "frame-yellow",
+    "frame-white",
+    "frame-black",
+    "frame-gray",
+    "frame-crystal",
+    "frame-royal",
+    "frame-gold",
+    "frame-vip"
+];
+
+
+
+// ==========================================
+// POBIERANIE NICKU
+// ==========================================
+
+async function loadUsername() {
+
+    const {
+        data: { user }
+    } =
+        await supabaseClient.auth.getUser();
+
+
+    if (!user) {
+        return;
+    }
+
+
+    const { data, error } =
+        await supabaseClient
+            .from("profiles")
+            .select("username, username_frame")
+            .eq("id", user.id)
+            .single();
+
+
+    if (error) {
+
+        console.error(
+            "Blad pobierania profilu:",
+            error
+        );
+
+        return;
+    }
+
+
+    const usernameLink =
+        document.getElementById(
+            "username-link"
+        );
+
+
+    if (!usernameLink) {
+        return;
+    }
+
+
+    usernameLink.textContent =
+        "\u{1F464} " + data.username;
+
+
+    frameClasses.forEach(
+        function(frameClass) {
+
+            usernameLink.classList.remove(
+                frameClass
+            );
+
+        }
+    );
+
+
+    const selectedFrame =
+        data.username_frame ||
+        "frame-none";
+
+
+    usernameLink.classList.add(
+        selectedFrame
+    );
+}
+
+
+
+// ==========================================
+// STATUS ZAMÓWIENIA
+// ==========================================
 
 function getStatusText(status) {
+
     if (status === "pending") {
+
         return "⏳ Oczekuje na potwierdzenie";
+
     }
+
 
     if (status === "confirmed") {
+
         return "💕 Potwierdzone";
+
     }
+
 
     if (status === "completed") {
+
         return "✅ Zrealizowane";
+
     }
 
+
     if (status === "cancelled") {
+
         return "❌ Anulowane";
+
     }
+
 
     return status;
 }
 
+
+
+// ==========================================
+// LOGOWANIE
+// ==========================================
+
+async function checkLogin() {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient.auth.getSession();
+
+
+    if (error || !data.session) {
+
+        window.location.href =
+            "logowanie.html";
+
+        return false;
+    }
+
+
+    await loadUsername();
+
+    return true;
+}
+
+
+
+// ==========================================
+// ŁADOWANIE ZAMÓWIEŃ
+// ==========================================
+
 async function loadOrders() {
 
-    const { data: { user }, error: userError } =
+    const {
+        data: {
+            user
+        },
+        error: userError
+    } =
         await supabaseClient.auth.getUser();
 
+
     if (userError || !user) {
-        window.location.href = "logowanie.html";
+
+        window.location.href =
+            "logowanie.html";
+
         return;
     }
 
-    const container = document.getElementById("orders-container");
 
-    const { data, error } = await supabaseClient
-        .from("orders")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
+    const container =
+        document.getElementById(
+            "orders-container"
+        );
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("orders")
+            .select("*")
+            .eq("user_id", user.id)
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
 
     if (error) {
-        console.error("Błąd pobierania zamówień:", error);
-        container.innerHTML = "<p>Nie udało się pobrać zamówień.</p>";
+
+        console.error(
+            "Błąd pobierania zamówień:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div class="welcome">
+
+                <h3>
+                    😢 Ups!
+                </h3>
+
+                <p>
+                    Nie udało się pobrać zamówień.
+                </p>
+
+            </div>
+
+        `;
+
         return;
     }
 
+
     if (data.length === 0) {
-        container.innerHTML = "<p>Nie masz jeszcze żadnych zamówień. 🛒💕</p>";
+
+        container.innerHTML = `
+
+            <div class="welcome">
+
+                <h3>
+                    💕 Brak zamówień
+                </h3>
+
+                <p>
+                    Nie masz jeszcze żadnych zamówień. 🛒💕
+                </p>
+
+            </div>
+
+        `;
+
         return;
     }
+
 
     container.innerHTML = "";
 
-for (const order of data) {
 
-    const orderElement = document.createElement("div");
-    orderElement.classList.add("order");
 
-    const date = new Date(order.created_at);
+    // ======================================
+    // POSZCZEGÓLNE ZAMÓWIENIA
+    // ======================================
 
-    const { data: items, error: itemsError } = await supabaseClient
-        .from("order_items")
-        .select("*")
-        .eq("order_id", order.id);
+    for (const order of data) {
 
-    if (itemsError) {
-        console.error("Błąd pobierania produktów zamówienia:", itemsError);
-        continue;
+        const orderElement =
+            document.createElement("div");
+
+
+        orderElement.classList.add(
+            "order"
+        );
+
+
+        const date =
+            new Date(
+                order.created_at
+            );
+
+
+        const {
+            data: items,
+            error: itemsError
+        } =
+            await supabaseClient
+                .from("order_items")
+                .select("*")
+                .eq(
+                    "order_id",
+                    order.id
+                );
+
+
+        if (itemsError) {
+
+            console.error(
+                "Błąd pobierania produktów zamówienia:",
+                itemsError
+            );
+
+            continue;
+        }
+
+
+        orderElement.innerHTML = `
+
+            <h3>
+                Zamówienie 📦
+            </h3>
+
+            <p>
+                Data:
+                ${date.toLocaleString("pl-PL")}
+            </p>
+
+            <div class="order-products"></div>
+
+            <p>
+                Razem:
+                ${order.total} 💕
+            </p>
+
+            <p>
+                Status:
+                ${getStatusText(order.status)}
+            </p>
+
+        `;
+
+
+        const productsContainer =
+            orderElement.querySelector(
+                ".order-products"
+            );
+
+
+        items.forEach(
+            function(item) {
+
+                const productElement =
+                    document.createElement("p");
+
+
+                productElement.textContent =
+                    "🛒 " +
+                    item.product_name +
+                    " × " +
+                    item.quantity +
+                    " — " +
+                    (
+                        item.price *
+                        item.quantity
+                    ) +
+                    " 💕";
+
+
+                productsContainer.appendChild(
+                    productElement
+                );
+
+            }
+        );
+
+
+        container.appendChild(
+            orderElement
+        );
+
     }
 
-    orderElement.innerHTML = `
-        <h3>Zamówienie 📦</h3>
-        <p>Data: ${date.toLocaleString("pl-PL")}</p>
-        <div class="order-products"></div>
-        <p>Razem: ${order.total} 💕</p>
-        <p>Status: ${getStatusText(order.status)}</p>
-    `;
-
-    const productsContainer =
-        orderElement.querySelector(".order-products");
-
-    items.forEach(function(item) {
-
-        const productElement = document.createElement("p");
-
-        productElement.textContent =
-            "🛒 " +
-            item.product_name +
-            " × " +
-            item.quantity +
-            " — " +
-            (item.price * item.quantity) +
-            " 💕";
-
-        productsContainer.appendChild(productElement);
-    });
-
-    container.appendChild(orderElement);
-}
 }
 
-loadOrders();
+
+
+// ==========================================
+// START
+// ==========================================
+
+async function startPage() {
+
+    const loggedIn =
+        await checkLogin();
+
+
+    if (!loggedIn) {
+        return;
+    }
+
+
+    await loadOrders();
+
+}
+
+
+startPage();
+
 
 </script>
 
+
 </body>
+
 </html>

@@ -3,23 +3,27 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<title>Nowości - The Cutest Shop</title>
+    <title>Nowości - The Cutest Shop</title>
 
-<link rel="stylesheet"
-      href="style.css">
+    <link rel="stylesheet"
+          href="style.css">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 </head>
 
 
 <body>
 
+
+<!-- =========================
+     MENU
+========================= -->
 
 <nav>
 
@@ -47,12 +51,28 @@
         Zamówienia
     </a>
 
+    <a href="ulubione.html">
+        Ulubione ❤️
+    </a>
+
     <a href="koszyk.html">
         Koszyk 🛒
     </a>
 
+    <a
+        href="profil.html"
+        id="username-link"
+        class="username-link frame-none"
+    >
+        👤 Ładowanie...
+    </a>
+
 </nav>
 
+
+<!-- =========================
+     NAGŁÓWEK
+========================= -->
 
 <h1>
     Nowości ✨
@@ -72,6 +92,10 @@
 
 </div>
 
+
+<!-- =========================
+     PRODUKTY
+========================= -->
 
 <h2>
     Najnowsze produkty ✨
@@ -115,6 +139,128 @@ const supabaseClient =
 
 
 // ==========================================
+// RAMKI NICKU
+// ==========================================
+
+const frameClasses = [
+    "frame-none",
+    "frame-pink",
+    "frame-purple",
+    "frame-blue",
+    "frame-mint",
+    "frame-yellow",
+    "frame-white",
+    "frame-black",
+    "frame-gray",
+    "frame-crystal",
+    "frame-royal",
+    "frame-gold",
+    "frame-vip"
+];
+
+
+
+// ==========================================
+// POBIERANIE NICKU
+// ==========================================
+
+async function loadUsername() {
+
+    const {
+        data: { user }
+    } =
+        await supabaseClient.auth.getUser();
+
+
+    if (!user) {
+        return;
+    }
+
+
+    const { data, error } =
+        await supabaseClient
+            .from("profiles")
+            .select("username, username_frame")
+            .eq("id", user.id)
+            .single();
+
+
+    if (error) {
+
+        console.error(
+            "Blad pobierania profilu:",
+            error
+        );
+
+        return;
+    }
+
+
+    const usernameLink =
+        document.getElementById(
+            "username-link"
+        );
+
+
+    if (!usernameLink) {
+        return;
+    }
+
+
+    usernameLink.textContent =
+        "\u{1F464} " + data.username;
+
+
+    frameClasses.forEach(
+        function(frameClass) {
+
+            usernameLink.classList.remove(
+                frameClass
+            );
+
+        }
+    );
+
+
+    const selectedFrame =
+        data.username_frame ||
+        "frame-none";
+
+
+    usernameLink.classList.add(
+        selectedFrame
+    );
+}
+
+
+
+// ==========================================
+// LOGOWANIE
+// ==========================================
+
+async function checkLogin() {
+
+    const { data, error } =
+        await supabaseClient.auth.getSession();
+
+
+    if (error || !data.session) {
+
+        window.location.href =
+            "logowanie.html";
+
+        return false;
+    }
+
+
+    await loadUsername();
+
+    return true;
+}
+
+
+
+// ==========================================
 // ŁADOWANIE NOWOŚCI
 // ==========================================
 
@@ -133,7 +279,8 @@ async function loadNewProducts() {
         await supabaseClient
             .from("products")
             .select("*")
-            .eq("is_new", true);
+            .eq("is_new", true)
+            .order("name");
 
 
     // ======================================
@@ -143,7 +290,7 @@ async function loadNewProducts() {
     if (error) {
 
         console.error(
-            "Błąd pobierania nowości:",
+            "Blad pobierania nowosci:",
             error
         );
 
@@ -157,8 +304,8 @@ async function loadNewProducts() {
                 </h3>
 
                 <p>
-                    Nie udało się załadować
-                    nowości.
+                    Nie udalo sie zaladowac
+                    nowosci.
                 </p>
 
             </div>
@@ -166,7 +313,6 @@ async function loadNewProducts() {
         `;
 
         return;
-
     }
 
 
@@ -196,7 +342,6 @@ async function loadNewProducts() {
         `;
 
         return;
-
     }
 
 
@@ -213,123 +358,132 @@ async function loadNewProducts() {
     // PRODUKTY
     // ======================================
 
-    products.forEach(function(product) {
+    products.forEach(
+        function(product) {
+
+            const element =
+                document.createElement(
+                    "div"
+                );
 
 
-        const element =
-            document.createElement("div");
+            element.className =
+                "product";
 
 
-        element.className =
-            "product";
 
+            // ==================================
+            // CENA
+            // ==================================
 
-        // ==================================
-        // CENA
-        // ==================================
-
-        let priceHTML = `
-            <p class="price">
-                ${product.price}💕
-            </p>
-        `;
-
-
-        // ==================================
-        // JEŚLI PRODUKT JEST NA PROMOCJI
-        // ==================================
-
-        if (
-            product.is_sale &&
-            product.sale_price !== null
-        ) {
-
-            priceHTML = `
+            let priceHTML = `
 
                 <p class="price">
-
-                    <span
-                        style="
-                            text-decoration: line-through;
-                            opacity: 0.6;
-                            margin-right: 6px;
-                        "
-                    >
-                        ${product.price}💕
-                    </span>
-
-                    <strong>
-                        ${product.sale_price}💕
-                    </strong>
-
+                    ${product.price} 💕
                 </p>
 
             `;
 
-        }
+
+
+            // ==================================
+            // PROMOCJA
+            // ==================================
+
+            if (
+                (
+                    product.is_sale === true ||
+                    product.is_sale === "true"
+                )
+                &&
+                product.sale_price !== null
+                &&
+                product.sale_price !== undefined
+                &&
+                product.sale_price !== ""
+            ) {
+
+                priceHTML = `
+
+                    <p class="price">
+
+                        <del>
+                            ${product.price} 💕
+                        </del>
+
+                        <strong>
+                            ${product.sale_price} 💕
+                        </strong>
+
+                    </p>
+
+                `;
+            }
 
 
 
-        // ==================================
-        // KARTA PRODUKTU
-        // ==================================
+            // ==================================
+            // KARTA PRODUKTU
+            // ==================================
 
-        element.innerHTML = `
+            element.innerHTML = `
 
-            <a
-                href="produkt.html?id=${product.id}"
-            >
-
-                <div
-                    style="
-                        position: relative;
-                    "
+                <a
+                    href="produkt.html?id=${product.id}"
                 >
 
-                    <img
-                        src="${product.image_url || ""}"
-                        alt="${product.name}"
-                    >
-
-                    <span
+                    <div
                         style="
-                            position: absolute;
-                            top: 10px;
-                            left: 10px;
-                            background: #ffd6e8;
-                            padding: 6px 10px;
-                            border-radius: 20px;
-                            font-weight: bold;
+                            position: relative;
                         "
                     >
-                        ✨ Nowość
-                    </span>
 
-                </div>
-
-
-                <h3>
-                    ${product.name}
-                </h3>
-
-            </a>
+                        <img
+                            src="${product.image_url || ""}"
+                            alt="${product.name}"
+                        >
 
 
-            <p class="description">
-                ${product.description || ""}
-            </p>
+                        <span
+                            style="
+                                position: absolute;
+                                top: 10px;
+                                left: 10px;
+                                background: #ffd6e8;
+                                padding: 6px 10px;
+                                border-radius: 20px;
+                                font-weight: bold;
+                            "
+                        >
+                            ✨ Nowość
+                        </span>
+
+                    </div>
 
 
-            ${priceHTML}
+                    <h3>
+                        ${product.name}
+                    </h3>
 
-        `;
+                </a>
 
 
-        container.appendChild(
-            element
-        );
+                <p class="description">
+                    ${product.description || ""}
+                </p>
 
-    });
+
+                ${priceHTML}
+
+            `;
+
+
+            container.appendChild(
+                element
+            );
+
+        }
+    );
 
 }
 
@@ -339,7 +493,23 @@ async function loadNewProducts() {
 // START
 // ==========================================
 
-loadNewProducts();
+async function startPage() {
+
+    const loggedIn =
+        await checkLogin();
+
+
+    if (!loggedIn) {
+        return;
+    }
+
+
+    await loadNewProducts();
+
+}
+
+
+startPage();
 
 
 </script>

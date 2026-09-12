@@ -1,55 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
+
 <head>
-<meta charset="UTF-8">
-<title>Ulubione ❤️</title>
 
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Ulubione ❤️ - The Cutest Shop</title>
+
+    <link rel="stylesheet"
+          href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 </head>
 
+
 <body>
 
-<h1>Ulubione ❤️</h1>
+
+<!-- =========================
+     MENU
+========================= -->
 
 <nav>
-    <a href="index.html">Home</a>
-    <a href="nowosci.html">Nowości</a>
-    <a href="promocje.html">Promocje</a>
-    <a href="misje.html">Misje</a>
-    <a href="osiagniecia.html">Osiągnięcia</a>
-    <a href="zamowienia.html">Zamówienia</a>
-    <a href="koszyk.html">Koszyk🛒</a>
-    <a href="ulubione.html">Ulubione❤️</a>
 
-    <a href="profil.html"
-       id="username-link"
-       class="username-link frame-none">
+    <a href="index.html">
+        Home
+    </a>
+
+    <a href="nowosci.html">
+        Nowości
+    </a>
+
+    <a href="promocje.html">
+        Promocje
+    </a>
+
+    <a href="misje.html">
+        Misje
+    </a>
+
+    <a href="osiagniecia.html">
+        Osiągnięcia
+    </a>
+
+    <a href="zamowienia.html">
+        Zamówienia
+    </a>
+
+    <a href="ulubione.html">
+        Ulubione ❤️
+    </a>
+
+    <a href="koszyk.html">
+        Koszyk 🛒
+    </a>
+
+    <a
+        href="profil.html"
+        id="username-link"
+        class="username-link frame-none"
+    >
         👤 Ładowanie...
     </a>
+
 </nav>
 
+
+<!-- =========================
+     MIŁOSTKI
+========================= -->
+
 <div id="milostki-display">
+
     💕 Miłostki:
     <span id="milostki-amount">0</span>
+
 </div>
 
-<h2>Twoje ulubione produkty 💕</h2>
 
-<div class="products favorites-products" id="favorites-container">
-    <p>Ładowanie ulubionych...</p>
+<!-- =========================
+     NAGŁÓWEK
+========================= -->
+
+<h1>
+    Ulubione ❤️
+</h1>
+
+
+<h2>
+    Twoje ulubione produkty 💕
+</h2>
+
+
+<!-- =========================
+     PRODUKTY
+========================= -->
+
+<div
+    class="products favorites-products"
+    id="favorites-container"
+>
+
+    <p>
+        Ładowanie ulubionych...
+    </p>
+
 </div>
 
 
 <script>
 
+
+// ==========================================
+// SUPABASE
+// ==========================================
+
 const SUPABASE_URL =
     "https://peohsktyolhtjdzwjrrk.supabase.co";
 
+
 const SUPABASE_PUBLISHABLE_KEY =
     "sb_publishable_HeAIYFUT37HmOQkZSUr8iw_x_ej8pXN";
+
 
 const supabaseClient =
     window.supabase.createClient(
@@ -58,8 +134,9 @@ const supabaseClient =
     );
 
 
+
 // ==========================================
-// RAMKA NICKU
+// RAMKI NICKU
 // ==========================================
 
 const frameClasses = [
@@ -79,14 +156,19 @@ const frameClasses = [
 ];
 
 
+
 // ==========================================
 // SPRAWDZENIE LOGOWANIA
 // ==========================================
 
 async function checkLogin() {
 
-    const { data, error } =
+    const {
+        data,
+        error
+    } =
         await supabaseClient.auth.getSession();
+
 
     if (error || !data.session) {
 
@@ -96,8 +178,10 @@ async function checkLogin() {
         return false;
     }
 
+
     return true;
 }
+
 
 
 // ==========================================
@@ -106,19 +190,31 @@ async function checkLogin() {
 
 async function loadUsername() {
 
-    const { data: { user } } =
+    const {
+        data: {
+            user
+        }
+    } =
         await supabaseClient.auth.getUser();
+
 
     if (!user) {
         return;
     }
 
-    const { data, error } =
+
+    const {
+        data,
+        error
+    } =
         await supabaseClient
             .from("profiles")
-            .select("username, username_frame")
+            .select(
+                "username, username_frame"
+            )
             .eq("id", user.id)
             .single();
+
 
     if (error) {
 
@@ -130,13 +226,21 @@ async function loadUsername() {
         return;
     }
 
+
     const usernameLink =
         document.getElementById(
             "username-link"
         );
 
+
+    if (!usernameLink) {
+        return;
+    }
+
+
     usernameLink.textContent =
-        "👤 " + data.username;
+        "\u{1F464} " +
+        data.username;
 
 
     frameClasses.forEach(
@@ -157,25 +261,36 @@ async function loadUsername() {
 }
 
 
+
 // ==========================================
 // MIŁOSTKI
 // ==========================================
 
 async function loadMilostki() {
 
-    const { data: { user } } =
+    const {
+        data: {
+            user
+        }
+    } =
         await supabaseClient.auth.getUser();
+
 
     if (!user) {
         return;
     }
 
-    const { data, error } =
+
+    const {
+        data,
+        error
+    } =
         await supabaseClient
             .from("profiles")
             .select("milostki")
             .eq("id", user.id)
             .single();
+
 
     if (error) {
 
@@ -187,11 +302,13 @@ async function loadMilostki() {
         return;
     }
 
+
     document.getElementById(
         "milostki-amount"
     ).textContent =
         data.milostki;
 }
+
 
 
 // ==========================================
@@ -206,7 +323,11 @@ async function loadFavorites() {
         );
 
 
-    const { data: { user } } =
+    const {
+        data: {
+            user
+        }
+    } =
         await supabaseClient.auth.getUser();
 
 
@@ -215,9 +336,14 @@ async function loadFavorites() {
     }
 
 
-    // Pobieramy zapisane produkty
+    // ======================================
+    // POBIERAMY ZAPISANE PRODUKTY
+    // ======================================
 
-    const { data: favorites, error } =
+    const {
+        data: favorites,
+        error
+    } =
         await supabaseClient
             .from("favorites")
             .select("product_id")
@@ -231,40 +357,80 @@ async function loadFavorites() {
             error
         );
 
-        container.innerHTML =
-            "<p>Nie udało się załadować ulubionych produktów.</p>";
-
-        return;
-    }
-
-
-    // Brak ulubionych
-
-    if (!favorites || favorites.length === 0) {
 
         container.innerHTML = `
-            <p>
-                Nie masz jeszcze żadnych ulubionych produktów. 🤍
-            </p>
+
+            <div class="welcome">
+
+                <h3>
+                    😢 Ups!
+                </h3>
+
+                <p>
+                    Nie udało się załadować
+                    ulubionych produktów.
+                </p>
+
+            </div>
+
         `;
 
         return;
     }
 
 
-    // Lista ID produktów
+    // ======================================
+    // BRAK ULUBIONYCH
+    // ======================================
+
+    if (
+        !favorites ||
+        favorites.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="welcome">
+
+                <h3>
+                    🤍 Brak ulubionych
+                </h3>
+
+                <p>
+                    Nie masz jeszcze żadnych
+                    ulubionych produktów.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    // ======================================
+    // LISTA ID PRODUKTÓW
+    // ======================================
 
     const productIds =
         favorites.map(
             function(item) {
+
                 return item.product_id;
+
             }
         );
 
 
-    // Pobieramy produkty
+    // ======================================
+    // POBIERAMY PRODUKTY
+    // ======================================
 
-    const { data: products, error: productsError } =
+    const {
+        data: products,
+        error: productsError
+    } =
         await supabaseClient
             .from("products")
             .select("*")
@@ -279,8 +445,23 @@ async function loadFavorites() {
             productsError
         );
 
-        container.innerHTML =
-            "<p>Nie udało się załadować produktów.</p>";
+
+        container.innerHTML = `
+
+            <div class="welcome">
+
+                <h3>
+                    😢 Ups!
+                </h3>
+
+                <p>
+                    Nie udało się załadować
+                    produktów.
+                </p>
+
+            </div>
+
+        `;
 
         return;
     }
@@ -288,6 +469,11 @@ async function loadFavorites() {
 
     container.innerHTML = "";
 
+
+
+    // ======================================
+    // WYŚWIETLANIE PRODUKTÓW
+    // ======================================
 
     products.forEach(
         function(product) {
@@ -297,73 +483,176 @@ async function loadFavorites() {
                     "div"
                 );
 
+
             productElement.className =
                 "product";
 
 
+
+            // ==================================
+            // CENA
+            // ==================================
+
+            let priceHTML = `
+
+                <p class="price">
+                    ${product.price} 💕
+                </p>
+
+            `;
+
+
+
+            // ==================================
+            // PROMOCJA
+            // ==================================
+
+            if (
+                (
+                    product.is_sale === true ||
+                    product.is_sale === "true"
+                )
+                &&
+                product.sale_price !== null
+                &&
+                product.sale_price !== undefined
+                &&
+                product.sale_price !== ""
+            ) {
+
+                priceHTML = `
+
+                    <p class="price">
+
+                        <del>
+                            ${product.price} 💕
+                        </del>
+
+                        <strong>
+                            ${product.sale_price} 💕
+                        </strong>
+
+                    </p>
+
+                `;
+
+            }
+
+
+
+            // ==================================
+            // KARTA
+            // ==================================
+
             productElement.innerHTML = `
 
-    <button
-        class="favorite-button"
-        type="button"
-        title="Usuń z ulubionych"
-    >
-        ❤️
-    </button>
+                <button
+                    class="favorite-button"
+                    type="button"
+                    title="Usuń z ulubionych"
+                >
+                    ❤️
+                </button>
 
-    <a href="produkt.html?id=${product.id}">
 
-        <img
-            src="${product.image_url}"
-            alt="${product.name}"
-        >
+                <a
+                    href="produkt.html?id=${product.id}"
+                >
 
-        <h3>
-            ${product.name}
-        </h3>
+                    <img
+                        src="${product.image_url || ""}"
+                        alt="${product.name}"
+                    >
 
-    </a>
 
-    <p class="description">
-        ${product.description}
-    </p>
+                    <h3>
+                        ${product.name}
+                    </h3>
 
-    <p class="price">
-        ${product.price} 💗
-    </p>
+                </a>
 
-`;
 
-const favoriteButton =
-    productElement.querySelector(
-        ".favorite-button"
-    );
+                <p class="description">
+                    ${product.description || ""}
+                </p>
 
-favoriteButton.addEventListener(
-    "click",
-    async function() {
 
-        const { error } =
-            await supabaseClient
-                .from("favorites")
-                .delete()
-                .eq("user_id", user.id)
-                .eq("product_id", product.id);
+                ${priceHTML}
 
-        if (error) {
+            `;
 
-            console.error(
-                "Błąd usuwania z ulubionych:",
-                error
+
+            // ==================================
+            // USUWANIE Z ULUBIONYCH
+            // ==================================
+
+            const favoriteButton =
+                productElement.querySelector(
+                    ".favorite-button"
+                );
+
+
+            favoriteButton.addEventListener(
+                "click",
+                async function() {
+
+                    const {
+                        error
+                    } =
+                        await supabaseClient
+                            .from("favorites")
+                            .delete()
+                            .eq(
+                                "user_id",
+                                user.id
+                            )
+                            .eq(
+                                "product_id",
+                                product.id
+                            );
+
+
+                    if (error) {
+
+                        console.error(
+                            "Błąd usuwania z ulubionych:",
+                            error
+                        );
+
+                        return;
+                    }
+
+
+                    productElement.remove();
+
+
+                    // Jeśli usunięto ostatni produkt
+                    if (
+                        container.children.length === 0
+                    ) {
+
+                        container.innerHTML = `
+
+                            <div class="welcome">
+
+                                <h3>
+                                    🤍 Brak ulubionych
+                                </h3>
+
+                                <p>
+                                    Nie masz już żadnych
+                                    ulubionych produktów.
+                                </p>
+
+                            </div>
+
+                        `;
+
+                    }
+
+                }
             );
 
-            return;
-        }
-
-        productElement.remove();
-
-    }
-);
 
             container.appendChild(
                 productElement
@@ -371,7 +660,9 @@ favoriteButton.addEventListener(
 
         }
     );
+
 }
+
 
 
 // ==========================================
@@ -383,21 +674,27 @@ async function startPage() {
     const loggedIn =
         await checkLogin();
 
+
     if (!loggedIn) {
         return;
     }
+
 
     await loadUsername();
 
     await loadMilostki();
 
     await loadFavorites();
+
 }
 
 
 startPage();
 
+
 </script>
 
+
 </body>
+
 </html>
