@@ -9,7 +9,7 @@ buttons.forEach(
 
         button.addEventListener(
             "click",
-            function() {
+            async function() {
 
                 let cart =
                     JSON.parse(
@@ -121,6 +121,20 @@ buttons.forEach(
                     "cart",
                     JSON.stringify(cart)
                 );
+				
+				const {
+    data: { user }
+} = await supabaseClient.auth.getUser();
+
+if (user && cart.length === 1) {
+    await supabaseClient.rpc(
+        "complete_automatic_mission",
+        {
+            p_user_id: user.id,
+            p_mission_name: "🛒 Pierwszy zakup"
+        }
+    );
+}
 
 
 
